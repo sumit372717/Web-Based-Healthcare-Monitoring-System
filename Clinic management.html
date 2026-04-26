@@ -1,0 +1,1592 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8"/>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+    <title>Healthcare Monitoring System BD</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary-container": "#0f52ba","on-primary-container": "#bcceff",
+                        "surface-variant": "#d5e3fc","secondary-container": "#90efef",
+                        "background": "#f8f9ff","inverse-on-surface": "#eaf1ff",
+                        "outline": "#737784","secondary": "#006a6a","surface-bright": "#f8f9ff",
+                        "primary": "#003c90","inverse-primary": "#b0c6ff","on-surface": "#0d1c2e",
+                        "secondary-fixed": "#93f2f2","outline-variant": "#c3c6d5",
+                        "tertiary-container": "#55585a","on-tertiary": "#ffffff",
+                        "on-primary-fixed-variant": "#00419c","primary-fixed-dim": "#b0c6ff",
+                        "inverse-surface": "#233144","on-primary": "#ffffff",
+                        "error": "#ba1a1a","tertiary": "#3d4143",
+                        "surface-container-high": "#dce9ff","on-secondary": "#ffffff",
+                        "surface-container": "#e6eeff","surface": "#f8f9ff",
+                        "on-secondary-container": "#006e6e","on-background": "#0d1c2e",
+                        "on-error": "#ffffff","surface-container-low": "#eff4ff",
+                        "surface-container-highest": "#d5e3fc","surface-tint": "#1d59c1",
+                        "surface-dim": "#ccdbf3","primary-fixed": "#d9e2ff",
+                        "on-surface-variant": "#434653","error-container": "#ffdad6",
+                        "on-primary-fixed": "#001945","surface-container-lowest": "#ffffff"
+                    },
+                    borderRadius: { DEFAULT:"0.25rem",lg:"0.5rem",xl:"0.75rem","2xl":"1rem",full:"9999px" },
+                    spacing: { lg:"24px",base:"4px",sm:"8px",xs:"4px",md:"16px",gutter:"20px",xl:"32px",margin:"24px" },
+                    fontFamily: {
+                        "body-md":["Inter","sans-serif"],"headline-md":["Manrope","sans-serif"],
+                        "title-sm":["Manrope","sans-serif"],"label-caps":["Inter","sans-serif"],
+                        "data-tabular":["Inter","sans-serif"],"body-sm":["Inter","sans-serif"],
+                        "display-lg":["Manrope","sans-serif"],"h1":["Inter"],"h2":["Inter"],"h3":["Inter"]
+                    },
+                    fontSize: {
+                        "body-md":["16px",{lineHeight:"1.5",fontWeight:"400"}],
+                        "headline-md":["24px",{lineHeight:"1.3",fontWeight:"600"}],
+                        "title-sm":["18px",{lineHeight:"1.4",fontWeight:"600"}],
+                        "label-caps":["12px",{lineHeight:"1",letterSpacing:"0.05em",fontWeight:"700"}],
+                        "data-tabular":["14px",{lineHeight:"1.2",letterSpacing:"-0.01em",fontWeight:"500"}],
+                        "body-sm":["14px",{lineHeight:"1.5",fontWeight:"400"}],
+                        "display-lg":["36px",{lineHeight:"1.2",fontWeight:"700"}],
+                        "h1":["32px",{lineHeight:"40px",letterSpacing:"-0.02em",fontWeight:"700"}],
+                        "h2":["24px",{lineHeight:"32px",letterSpacing:"-0.01em",fontWeight:"600"}],
+                        "h3":["20px",{lineHeight:"28px",fontWeight:"600"}]
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .material-symbols-outlined{font-variation-settings:'FILL' 0,'wght' 400,'GRAD' 0,'opsz' 24}
+        .fill-icon{font-variation-settings:'FILL' 1,'wght' 400,'GRAD' 0,'opsz' 24}
+        .custom-scrollbar::-webkit-scrollbar{width:4px}
+        .custom-scrollbar::-webkit-scrollbar-track{background:transparent}
+        .custom-scrollbar::-webkit-scrollbar-thumb{background:#cbd5e1;border-radius:10px}
+        .custom-shadow{box-shadow:0 2px 8px rgba(0,0,0,0.12)}
+        .bento-card-gradient{background:linear-gradient(135deg,rgba(255,255,255,1) 0%,rgba(248,250,255,1) 100%)}
+        .tab-pane{display:none}
+        .tab-pane.active{display:block;animation:fadeIn 0.3s ease-in-out}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        /* Modal */
+        .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);backdrop-filter:blur(4px);z-index:9999;align-items:center;justify-content:center}
+        .modal-overlay.show{display:flex;animation:fadeIn 0.2s ease}
+        .modal-box{background:#fff;border-radius:1rem;padding:28px;width:90%;max-width:520px;max-height:90vh;overflow-y:auto;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.18);animation:slideUp 0.3s ease}
+        .modal-box.wide{max-width:700px}
+        @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+        /* Pie chart */
+        .pie-segment{transition:opacity 0.2s}
+        .pie-segment:hover{opacity:0.8}
+        /* Star rating */
+        .star{color:#e2e8f0;font-size:1.1rem}
+        .star.filled{color:#f59e0b}
+        /* Toast */
+        #toast-container{position:fixed;bottom:24px;right:24px;z-index:99999;display:flex;flex-direction:column;gap:8px}
+        .toast{background:#1e293b;color:#fff;padding:12px 18px;border-radius:10px;font-size:0.87rem;font-weight:500;display:flex;align-items:center;gap:10px;box-shadow:0 8px 20px rgba(0,0,0,0.2);animation:slideInRight 0.3s ease}
+        .toast.success{background:#15803d}
+        .toast.error{background:#be123c}
+        @keyframes slideInRight{from{opacity:0;transform:translateX(20px)}to{opacity:1;transform:translateX(0)}}
+        /* Profile dropdown */
+        .profile-dropdown{display:none;position:absolute;top:calc(100%+10px);right:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 12px 28px rgba(0,0,0,0.12);width:240px;z-index:1000;overflow:hidden;animation:popIn 0.2s ease}
+        .profile-dropdown.open{display:block}
+        @keyframes popIn{from{opacity:0;transform:translateY(-8px) scale(0.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+        .profile-dropdown a{display:flex;align-items:center;gap:10px;padding:10px 16px;color:#1e293b;text-decoration:none;font-size:0.87rem;font-weight:500;transition:0.15s;cursor:pointer}
+        .profile-dropdown a:hover{background:#eff6ff;color:#003c90}
+        /* Care Unit section */
+        .care-unit-card{background:linear-gradient(135deg,#003c90 0%,#006a6a 100%);border-radius:1rem;padding:24px;color:#fff}
+        /* Input style */
+        .form-input-style{width:100%;padding:10px 14px;border:1.5px solid #e2e8f0;border-radius:8px;font-family:'Inter',sans-serif;font-size:0.9rem;color:#1e293b;transition:0.2s;background:#fff}
+        .form-input-style:focus{outline:none;border-color:#003c90;box-shadow:0 0 0 3px rgba(0,60,144,0.08)}
+        textarea.form-input-style{resize:vertical;min-height:90px}
+        .form-label-style{display:block;font-size:0.75rem;font-weight:700;color:#475569;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.04em}
+        /* Chart bars */
+        .chart-bar{background:#0f52ba;border-radius:4px 4px 0 0;transition:opacity 0.2s}
+        .chart-bar:hover{opacity:0.8}
+        /* Satisfaction doughnut */
+        .doughnut-text{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;flex-direction:column}
+        /* Nav active */
+        .nav-item-active{background:#eff6ff;color:#1d4ed8;border-left:4px solid #1d4ed8;font-weight:700}
+
+        /* Notification badge pulse */
+        @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.5}}
+        .pulse-dot{animation:pulse 2s infinite}
+
+        /* Alert Notification Panel */
+        #alertNotifPanel{display:none;position:absolute;top:calc(100%+10px);right:0;background:#fff;border:1px solid #e2e8f0;border-radius:12px;box-shadow:0 12px 28px rgba(0,0,0,0.12);width:320px;z-index:1001;overflow:hidden;animation:popIn 0.2s ease}
+        #alertNotifPanel.open{display:block}
+    </style>
+</head>
+<body class="bg-background font-body-md text-on-surface antialiased overflow-x-hidden">
+
+<!-- ===== HEADER ===== -->
+<header class="sticky top-0 z-50 flex items-center justify-between px-6 py-3 w-full bg-white/90 backdrop-blur-md shadow-[0px_4px_12px_rgba(15,82,186,0.05)] border-b border-slate-200">
+    <div class="flex items-center gap-8">
+        <div class="flex items-center gap-2">
+            <span class="material-symbols-outlined text-blue-700 text-2xl fill-icon">local_hospital</span>
+            <div>
+                <span class="text-base font-extrabold tracking-tight text-blue-700 block leading-tight">Healthcare Monitoring</span>
+                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">System BD</span>
+            </div>
+        </div>
+        <div class="hidden md:flex items-center bg-surface-container-low px-4 py-2 rounded-lg border border-outline-variant w-72">
+            <span class="material-symbols-outlined text-slate-400 mr-2 text-[20px]">search</span>
+            <input class="bg-transparent border-none focus:ring-0 text-body-sm w-full outline-none" placeholder="Search patient ID or records..." type="text" id="globalSearch" oninput="handleSearch(this.value)"/>
+        </div>
+    </div>
+
+    <div class="flex items-center gap-5">
+        <!-- Date Selector -->
+        <div class="flex items-center gap-2 bg-white border border-outline-variant rounded-lg px-3 py-1.5 shadow-sm">
+            <span class="material-symbols-outlined text-[18px] text-primary">date_range</span>
+            <input type="date" id="globalDatePicker" value="2026-04-26" onchange="applyDateFilter(this.value)"
+                class="bg-transparent border-none focus:ring-0 text-sm font-medium text-on-surface outline-none cursor-pointer"/>
+        </div>
+        <!-- Notifications -->
+        <div class="flex items-center gap-3 border-r border-outline-variant pr-5 relative" id="notifContainer">
+            <button class="relative p-2 rounded-full hover:bg-slate-50 transition-all" onclick="toggleNotifPanel()">
+                <span class="material-symbols-outlined text-slate-600">notifications</span>
+                <span class="absolute top-1 right-1 w-2.5 h-2.5 bg-error rounded-full border-2 border-white pulse-dot" id="notifDot"></span>
+            </button>
+            <!-- Notification Panel -->
+            <div id="alertNotifPanel">
+                <div style="padding:14px 16px;background:#eff6ff;border-bottom:1px solid #e2e8f0;display:flex;justify-content:space-between;align-items:center">
+                    <span class="font-bold text-sm text-slate-900">Alerts & Notifications</span>
+                    <button onclick="clearAllAlerts()" class="text-xs text-primary font-bold hover:underline">Clear all</button>
+                </div>
+                <div id="notifList" class="overflow-y-auto" style="max-height:300px">
+                    <div class="p-4 border-b border-slate-100 flex gap-3 items-start">
+                        <span class="material-symbols-outlined text-red-500 text-[20px] mt-0.5">warning</span>
+                        <div><p class="text-sm font-bold text-slate-800">Critical: Vaccine Stock Low</p><p class="text-xs text-slate-500 mt-0.5">Only 10% remaining — action required</p><p class="text-[10px] text-slate-400 mt-1">Apr 26, 2026</p></div>
+                    </div>
+                    <div class="p-4 border-b border-slate-100 flex gap-3 items-start">
+                        <span class="material-symbols-outlined text-amber-500 text-[20px] mt-0.5">inventory_2</span>
+                        <div><p class="text-sm font-bold text-slate-800">Ibuprofen 400mg Out of Stock</p><p class="text-xs text-slate-500 mt-0.5">Restock request needed immediately</p><p class="text-[10px] text-slate-400 mt-1">Apr 25, 2026</p></div>
+                    </div>
+                    <div class="p-4 flex gap-3 items-start">
+                        <span class="material-symbols-outlined text-blue-500 text-[20px] mt-0.5">event_available</span>
+                        <div><p class="text-sm font-bold text-slate-800">Monthly Visit Target Met</p><p class="text-xs text-slate-500 mt-0.5">2,514 visits recorded for April 2026</p><p class="text-[10px] text-slate-400 mt-1">Apr 24, 2026</p></div>
+                    </div>
+                </div>
+                <div style="padding:12px 16px;border-top:1px solid #e2e8f0">
+                    <button onclick="openModal('emergencyAlertModal');toggleNotifPanel()" class="w-full bg-error text-white py-2 rounded-lg font-bold text-sm flex items-center justify-center gap-2">
+                        <span class="material-symbols-outlined text-[16px]">campaign</span> Send Emergency Alert
+                    </button>
+                </div>
+            </div>
+        </div>
+        <!-- User Profile -->
+        <div class="relative" id="profileMenuContainer">
+            <button onclick="toggleProfileMenu()" class="flex items-center gap-3 hover:bg-slate-50 rounded-xl px-3 py-1.5 transition-all">
+                <div class="text-right">
+                    <p class="text-sm font-bold text-on-surface">Dr. Sarah Jenkins</p>
+                    <p class="text-[10px] text-slate-500 uppercase font-bold tracking-wider">Chief Medical Officer</p>
+                </div>
+                <img alt="Profile" class="w-9 h-9 rounded-full border-2 border-primary object-cover"
+                    src="https://ui-avatars.com/api/?name=Sarah+Jenkins&background=003c90&color=fff&bold=true"/>
+                <span class="material-symbols-outlined text-slate-400 text-[18px]">expand_more</span>
+            </button>
+            <div class="profile-dropdown" id="profileDropdown">
+                <div style="padding:16px;background:#eff6ff;border-bottom:1px solid #e2e8f0;">
+                    <div class="flex items-center gap-3">
+                        <img src="https://ui-avatars.com/api/?name=Sarah+Jenkins&background=003c90&color=fff&bold=true" class="w-11 h-11 rounded-full border-2 border-primary" alt=""/>
+                        <div>
+                            <p class="font-bold text-on-surface text-sm">Dr. Sarah Jenkins</p>
+                            <p class="text-xs text-slate-500">Chief Medical Officer</p>
+                        </div>
+                    </div>
+                </div>
+                <a onclick="openModal('profileInfoModal');closeProfileMenu()"><span class="material-symbols-outlined text-[18px]">account_circle</span> My Profile</a>
+                <a href="#"><span class="material-symbols-outlined text-[18px]">settings</span> Settings</a>
+                <hr style="border:0;height:1px;background:#e2e8f0;margin:0">
+                <a onclick="handleLogout()" style="color:#dc2626"><span class="material-symbols-outlined text-[18px]">logout</span> Logout</a>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="flex h-[calc(100vh-64px)] overflow-hidden">
+
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="fixed left-0 top-0 h-full w-64 flex flex-col pt-20 pb-6 z-40 bg-slate-50 border-r border-slate-200 font-manrope text-sm font-medium">
+        <div class="px-6 mb-6">
+            <div class="care-unit-card">
+                <div class="flex items-center gap-2 mb-1">
+                    <span class="material-symbols-outlined text-white text-[20px] fill-icon">health_and_safety</span>
+                    <span class="font-bold text-white text-sm">Care Unit</span>
+                </div>
+                <p class="text-[11px] text-blue-200 font-semibold">Acute Care Division</p>
+                <div class="mt-3 grid grid-cols-2 gap-2">
+                    <div class="bg-white/10 rounded-lg p-2 text-center">
+                        <p class="text-white font-extrabold text-base leading-tight">12,480</p>
+                        <p class="text-blue-200 text-[9px] font-bold uppercase">Patients</p>
+                    </div>
+                    <div class="bg-white/10 rounded-lg p-2 text-center">
+                        <p class="text-white font-extrabold text-base leading-tight">150</p>
+                        <p class="text-blue-200 text-[9px] font-bold uppercase">Staff</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav class="flex-1 space-y-1 px-3">
+            <div id="nav-management-dashboard" onclick="openTab('management-dashboard')" class="nav-item flex items-center gap-3 bg-blue-50 text-blue-700 shadow-sm border-l-4 border-blue-700 px-4 py-3 rounded-r-lg cursor-pointer transition-all font-bold">
+                <span class="material-symbols-outlined">dashboard</span>
+                <span>Management Dashboard</span>
+            </div>
+            <div id="nav-patient-analytics" onclick="openTab('patient-analytics')" class="nav-item flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 hover:bg-blue-50/50 hover:text-blue-700 transition-all cursor-pointer rounded-r-lg">
+                <span class="material-symbols-outlined">group</span>
+                <span>Patient Analytics</span>
+            </div>
+            <div id="nav-financial-report" onclick="openTab('financial-report')" class="nav-item flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 hover:bg-blue-50/50 hover:text-blue-700 transition-all cursor-pointer rounded-r-lg">
+                <span class="material-symbols-outlined">account_balance_wallet</span>
+                <span>Financial Report</span>
+            </div>
+            <div id="nav-medical-inventory" onclick="openTab('medical-inventory')" class="nav-item flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 hover:bg-blue-50/50 hover:text-blue-700 transition-all cursor-pointer rounded-r-lg">
+                <span class="material-symbols-outlined">inventory_2</span>
+                <span>Medical Inventory</span>
+            </div>
+            <div id="nav-performance-matrics" onclick="openTab('performance-matrics')" class="nav-item flex items-center gap-3 text-slate-500 px-4 py-3 hover:translate-x-1 hover:bg-blue-50/50 hover:text-blue-700 transition-all cursor-pointer rounded-r-lg">
+                <span class="material-symbols-outlined">query_stats</span>
+                <span>Performance Metrics</span>
+            </div>
+        </nav>
+
+        <!-- Emergency Alert Button -->
+        <div class="px-5 py-4">
+            <button onclick="openModal('emergencyAlertModal')" class="w-full bg-error text-white py-3 rounded-xl font-bold shadow-lg shadow-red-500/20 active:scale-95 transition-all flex items-center justify-center gap-2">
+                <span class="material-symbols-outlined text-[20px]">campaign</span>
+                Emergency Alert
+            </button>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <div class="flex-1 w-full h-full overflow-y-auto custom-scrollbar relative">
+
+        <!-- ====================== MANAGEMENT DASHBOARD ====================== -->
+        <main id="management-dashboard" class="tab-pane active ml-64 p-lg">
+            <div class="flex items-center justify-between mb-xl mt-4">
+                <div>
+                    <h1 class="font-headline-md text-headline-md text-on-surface">Management Dashboard</h1>
+                    <p class="text-body-sm text-slate-500 mt-1" id="dashDateLabel">Institutional overview · April 26, 2026</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <button onclick="generateReport()" class="bg-primary-container text-on-primary-container px-6 py-2.5 rounded-lg font-bold text-body-sm active:scale-95 transition-all flex items-center gap-2">
+                        <span class="material-symbols-outlined text-[18px]">picture_as_pdf</span> Generate Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-gutter mb-xl">
+                <!-- Total Patients -->
+                <div class="bg-white p-5 rounded-xl border border-outline-variant shadow-[0px_4px_12px_rgba(15,82,186,0.05)] cursor-pointer hover:shadow-lg hover:border-primary transition-all" onclick="openModal('totalPatientsModal')">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="p-2.5 bg-blue-50 rounded-lg"><span class="material-symbols-outlined text-blue-700">person</span></div>
+                        <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">+12%</span>
+                    </div>
+                    <p class="text-body-sm text-slate-500 font-medium">Total Patients</p>
+                    <p class="text-headline-md font-extrabold text-blue-900">12,480</p>
+                    <p class="text-[11px] text-blue-500 mt-1 font-medium">Click to view list →</p>
+                </div>
+                <!-- Monthly Visits -->
+                <div class="bg-white p-5 rounded-xl border border-outline-variant shadow-[0px_4px_12px_rgba(15,82,186,0.05)] cursor-pointer hover:shadow-lg hover:border-primary transition-all" onclick="openModal('monthlyVisitsModal')">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="p-2.5 bg-teal-50 rounded-lg"><span class="material-symbols-outlined text-secondary">event_available</span></div>
+                        <span class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded-full">+4.5%</span>
+                    </div>
+                    <p class="text-body-sm text-slate-500 font-medium">Monthly Visits</p>
+                    <p class="text-headline-md font-extrabold text-blue-900">2,514</p>
+                    <p class="text-[11px] text-blue-500 mt-1 font-medium">Click to view visits →</p>
+                </div>
+                <!-- Active Staff -->
+                <div class="bg-white p-5 rounded-xl border border-outline-variant shadow-[0px_4px_12px_rgba(15,82,186,0.05)]">
+                    <div class="flex justify-between items-start mb-2">
+                        <p class="text-body-sm text-slate-500 font-medium">Active Staff</p>
+                        <span class="text-headline-md font-extrabold text-blue-900 leading-none">150</span>
+                    </div>
+                    <div class="space-y-2 mt-4">
+                        <div class="flex items-center gap-2"><div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="bg-primary h-full" style="width:27%"></div></div><span class="text-[10px] font-bold text-slate-600 w-16">DRS: 40</span></div>
+                        <div class="flex items-center gap-2"><div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="bg-blue-400 h-full" style="width:53%"></div></div><span class="text-[10px] font-bold text-slate-600 w-16">NRS: 80</span></div>
+                        <div class="flex items-center gap-2"><div class="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden"><div class="bg-slate-300 h-full" style="width:20%"></div></div><span class="text-[10px] font-bold text-slate-600 w-16">OTH: 30</span></div>
+                    </div>
+                </div>
+                <!-- Monthly Revenue -->
+                <div class="bg-primary-container p-5 rounded-xl border border-primary text-white shadow-[0px_8px_20px_rgba(15,82,186,0.2)]">
+                    <div class="flex justify-between items-start mb-3">
+                        <div class="p-2.5 bg-white/20 rounded-lg"><span class="material-symbols-outlined text-white">payments</span></div>
+                        <span class="text-xs font-bold text-white/90 bg-white/10 px-2 py-1 rounded-full">+8.2%</span>
+                    </div>
+                    <p class="text-body-sm text-on-primary-container font-medium">Monthly Revenue</p>
+                    <p class="text-headline-md font-extrabold">৳ 4,85,000</p>
+                </div>
+            </div>
+
+            <!-- Dashboard Panels Grid -->
+            <div class="grid grid-cols-12 gap-gutter mb-xl">
+                <!-- Operational Throughput Chart -->
+                <div class="col-span-12 lg:col-span-8 bg-white rounded-xl border border-outline-variant p-lg shadow-sm">
+                    <div class="flex justify-between items-center mb-xl">
+                        <div>
+                            <h3 class="font-title-sm text-title-sm text-on-surface">Operational Throughput</h3>
+                            <p class="text-body-sm text-slate-500">Patient admission vs consultation volume</p>
+                        </div>
+                        <div class="flex items-center gap-4">
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-blue-700"></span><span class="text-[12px] font-bold text-slate-600 uppercase">Patients</span></div>
+                            <div class="flex items-center gap-2"><span class="w-3 h-3 rounded-full bg-teal-400"></span><span class="text-[12px] font-bold text-slate-600 uppercase">Consults</span></div>
+                        </div>
+                    </div>
+                    <div class="relative h-[280px] w-full bg-slate-50/50 rounded-lg overflow-hidden border border-slate-100 flex items-end px-4 pb-8">
+                        <svg class="absolute inset-0 w-full h-full p-4 overflow-visible" viewBox="0 0 800 240">
+                            <line stroke="#e2e8f0" stroke-width="1" x1="0" x2="800" y1="0" y2="0"/>
+                            <line stroke="#e2e8f0" stroke-width="1" x1="0" x2="800" y1="60" y2="60"/>
+                            <line stroke="#e2e8f0" stroke-width="1" x1="0" x2="800" y1="120" y2="120"/>
+                            <line stroke="#e2e8f0" stroke-width="1" x1="0" x2="800" y1="180" y2="180"/>
+                            <path d="M0,180 Q133,140 266,160 T533,80 T800,100" fill="none" stroke="#0f52ba" stroke-width="3"/>
+                            <path d="M0,180 Q133,140 266,160 T533,80 T800,100 V240 H0 Z" fill="url(#bg1)" opacity="0.1"/>
+                            <path d="M0,200 Q133,180 266,140 T533,120 T800,60" fill="none" stroke="#006a6a" stroke-width="3"/>
+                            <defs>
+                                <linearGradient id="bg1" x1="0%" x2="0%" y1="0%" y2="100%">
+                                    <stop offset="0%" style="stop-color:#0f52ba;stop-opacity:1"/>
+                                    <stop offset="100%" style="stop-color:#0f52ba;stop-opacity:0"/>
+                                </linearGradient>
+                            </defs>
+                        </svg>
+                        <div class="flex justify-between w-full text-[11px] font-bold text-slate-400 uppercase tracking-tighter z-10">
+                            <span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span>
+                        </div>
+                    </div>
+                </div>
+                <!-- Right column panels -->
+                <div class="col-span-12 lg:col-span-4 space-y-gutter">
+                    <!-- Clinical Benchmarks -->
+                    <div class="bg-white rounded-xl border border-outline-variant p-md shadow-sm">
+                        <h4 class="font-bold text-[12px] uppercase tracking-widest text-slate-400 mb-4 px-2">Clinical Benchmarks</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                <div class="flex items-center gap-3"><span class="material-symbols-outlined text-blue-600">sentiment_satisfied</span><span class="text-body-sm font-semibold">Patient Satisfaction</span></div>
+                                <span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded">EXCELLENT</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                <div class="flex items-center gap-3"><span class="material-symbols-outlined text-blue-600">timer</span><span class="text-body-sm font-semibold">Avg Wait Time</span></div>
+                                <div class="text-right"><p class="text-xs font-bold text-blue-900">15m</p><p class="text-[10px] text-green-600 font-bold">GOOD</p></div>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-slate-50 rounded-lg border border-slate-200">
+                                <div class="flex items-center gap-3"><span class="material-symbols-outlined text-blue-600">bed</span><span class="text-body-sm font-semibold">Bed Occupancy</span></div>
+                                <div class="text-right"><p class="text-xs font-bold text-blue-900">85%</p><p class="text-[10px] text-blue-500 font-bold">OPTIMAL</p></div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Inventory Alert -->
+                    <div class="bg-red-50 border-2 border-red-100 rounded-xl p-md shadow-lg shadow-red-500/5 relative overflow-hidden">
+                        <div class="flex items-center gap-2 text-error mb-2">
+                            <span class="material-symbols-outlined text-[20px]">warning</span>
+                            <span class="text-[12px] font-bold uppercase tracking-wider">Critical Inventory Alert</span>
+                        </div>
+                        <h5 class="text-title-sm font-bold text-blue-900">Vaccines Stock Low</h5>
+                        <p class="text-body-sm text-slate-600 mt-1 mb-4">Only <span class="font-bold text-error">10%</span> remaining.</p>
+                        <button onclick="openTab('medical-inventory')" class="w-full bg-white border border-red-200 text-error font-bold py-2 rounded-lg text-body-sm hover:bg-red-500 hover:text-white transition-all">Restock Now</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Patient Satisfaction + Inventory + Disease Distribution -->
+            <div class="grid grid-cols-12 gap-gutter mb-xl">
+                <!-- Patient Satisfaction Graph -->
+                <div class="col-span-12 lg:col-span-4 bg-white rounded-xl border border-outline-variant p-5 shadow-sm">
+                    <h3 class="font-title-sm text-title-sm mb-1">Patient Satisfaction</h3>
+                    <p class="text-xs text-slate-500 mb-5">Overall patient experience overview</p>
+                    <div class="flex justify-center mb-5 relative">
+                        <div class="relative w-36 h-36">
+                            <svg viewBox="0 0 36 36" class="w-full h-full -rotate-90">
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#e2e8f0" stroke-width="3.5"/>
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#15803d" stroke-width="3.5" stroke-dasharray="82 18" stroke-linecap="round"/>
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f59e0b" stroke-width="3.5" stroke-dasharray="11 89" stroke-dashoffset="-82" stroke-linecap="round"/>
+                                <circle cx="18" cy="18" r="15.9" fill="none" stroke="#dc2626" stroke-width="3.5" stroke-dasharray="7 93" stroke-dashoffset="-93" stroke-linecap="round"/>
+                            </svg>
+                            <div class="doughnut-text">
+                                <span class="text-2xl font-extrabold text-slate-900">82%</span>
+                                <span class="text-[10px] text-slate-400 font-bold">SATISFIED</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-green-700"></div><span class="text-slate-600">Satisfied</span></div><span class="font-bold text-slate-700">82%</span></div>
+                        <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-amber-500"></div><span class="text-slate-600">Neutral</span></div><span class="font-bold text-slate-700">11%</span></div>
+                        <div class="flex items-center justify-between text-sm"><div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-red-600"></div><span class="text-slate-600">Dissatisfied</span></div><span class="font-bold text-slate-700">7%</span></div>
+                    </div>
+                    <div class="mt-5 pt-4 border-t border-slate-100">
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-slate-400 mb-3">Monthly Trend</p>
+                        <div class="flex items-end gap-2 h-16">
+                            <div class="flex flex-col items-center gap-1 flex-1"><div class="chart-bar w-full" style="height:60%"></div><span class="text-[9px] text-slate-400">Oct</span></div>
+                            <div class="flex flex-col items-center gap-1 flex-1"><div class="chart-bar w-full" style="height:72%"></div><span class="text-[9px] text-slate-400">Nov</span></div>
+                            <div class="flex flex-col items-center gap-1 flex-1"><div class="chart-bar w-full" style="height:65%"></div><span class="text-[9px] text-slate-400">Dec</span></div>
+                            <div class="flex flex-col items-center gap-1 flex-1"><div class="chart-bar w-full" style="height:78%"></div><span class="text-[9px] text-slate-400">Jan</span></div>
+                            <div class="flex flex-col items-center gap-1 flex-1"><div class="chart-bar w-full" style="height:80%"></div><span class="text-[9px] text-slate-400">Feb</span></div>
+                            <div class="flex flex-col items-center gap-1 flex-1"><div class="chart-bar w-full bg-green-600" style="height:100%"></div><span class="text-[9px] text-slate-400">Apr</span></div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Inventory Display Panel -->
+                <div class="col-span-12 lg:col-span-4 bg-white rounded-xl border border-outline-variant p-5 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-title-sm text-title-sm">Inventory Status</h3>
+                            <p class="text-xs text-slate-500">Stock levels overview</p>
+                        </div>
+                        <span class="material-symbols-outlined text-primary">inventory_2</span>
+                    </div>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between p-2.5 bg-green-50 rounded-lg border border-green-100">
+                            <div><p class="font-bold text-sm text-slate-800">Amoxicillin 500mg</p><p class="text-xs text-slate-500">1,240 units</p></div>
+                            <span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">Normal</span>
+                        </div>
+                        <div class="flex items-center justify-between p-2.5 bg-yellow-50 rounded-lg border border-yellow-200">
+                            <div>
+                                <p class="font-bold text-sm text-slate-800 flex items-center gap-1"><span class="material-symbols-outlined text-amber-500 text-[16px]">warning</span> Surgical Gloves (M)</p>
+                                <p class="text-xs text-amber-600 font-semibold">5 boxes — Low Stock</p>
+                            </div>
+                            <button onclick="openTab('medical-inventory')" class="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full hover:bg-amber-200 transition-all">Restock</button>
+                        </div>
+                        <div class="flex items-center justify-between p-2.5 bg-red-50 rounded-lg border border-red-200">
+                            <div>
+                                <p class="font-bold text-sm text-slate-800 flex items-center gap-1"><span class="material-symbols-outlined text-red-500 text-[16px]">error</span> Ibuprofen 400mg</p>
+                                <p class="text-xs text-red-600 font-semibold">Out of Stock</p>
+                            </div>
+                            <button onclick="openTab('medical-inventory')" class="text-xs font-bold text-red-700 bg-red-100 px-2 py-0.5 rounded-full hover:bg-red-200 transition-all">Order Now</button>
+                        </div>
+                        <div class="flex items-center justify-between p-2.5 bg-red-50 rounded-lg border border-red-200">
+                            <div>
+                                <p class="font-bold text-sm text-slate-800 flex items-center gap-1"><span class="material-symbols-outlined text-red-500 text-[16px]">error</span> Vaccines (Stock)</p>
+                                <p class="text-xs text-red-600 font-semibold">10% remaining — Critical</p>
+                            </div>
+                            <button onclick="openTab('medical-inventory')" class="text-xs font-bold text-red-700 bg-red-100 px-2 py-0.5 rounded-full hover:bg-red-200 transition-all">Order Now</button>
+                        </div>
+                        <div class="flex items-center justify-between p-2.5 bg-green-50 rounded-lg border border-green-100">
+                            <div><p class="font-bold text-sm text-slate-800">IV Drip Sets</p><p class="text-xs text-slate-500">340 units</p></div>
+                            <span class="text-xs font-bold text-green-700 bg-green-100 px-2 py-0.5 rounded-full">Normal</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Disease Distribution Pie Chart -->
+                <div class="col-span-12 lg:col-span-4 bg-white rounded-xl border border-outline-variant p-5 shadow-sm">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <h3 class="font-title-sm text-title-sm">Disease Distribution</h3>
+                            <p class="text-xs text-slate-500">Percentage by condition</p>
+                        </div>
+                        <span class="material-symbols-outlined text-secondary">pie_chart</span>
+                    </div>
+                    <div class="flex justify-center mb-4">
+                        <svg viewBox="0 0 200 200" width="160" height="160">
+                            <path d="M100,100 L100,10 A90,90 0 0,1 185.1,54.9 Z" fill="#0f52ba" class="pie-segment"/>
+                            <path d="M100,100 L185.1,54.9 A90,90 0 0,1 185.1,145.1 Z" fill="#006a6a" class="pie-segment"/>
+                            <path d="M100,100 L185.1,145.1 A90,90 0 0,1 55.3,190 Z" fill="#f59e0b" class="pie-segment"/>
+                            <path d="M100,100 L55.3,190 A90,90 0 0,1 10.9,67.1 Z" fill="#dc2626" class="pie-segment"/>
+                            <path d="M100,100 L10.9,67.1 A90,90 0 0,1 100,10 Z" fill="#8b5cf6" class="pie-segment"/>
+                            <circle cx="100" cy="100" r="45" fill="white"/>
+                            <text x="100" y="96" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Disease</text>
+                            <text x="100" y="112" text-anchor="middle" font-size="11" font-weight="700" fill="#1e293b">Report</text>
+                        </svg>
+                    </div>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between text-xs"><div class="flex items-center gap-2"><div class="w-3 h-3 rounded-sm bg-primary"></div><span>Hypertension</span></div><span class="font-bold">35%</span></div>
+                        <div class="flex items-center justify-between text-xs"><div class="flex items-center gap-2"><div class="w-3 h-3 rounded-sm bg-secondary"></div><span>Diabetes</span></div><span class="font-bold">25%</span></div>
+                        <div class="flex items-center justify-between text-xs"><div class="flex items-center gap-2"><div class="w-3 h-3 rounded-sm bg-amber-500"></div><span>Respiratory</span></div><span class="font-bold">20%</span></div>
+                        <div class="flex items-center justify-between text-xs"><div class="flex items-center gap-2"><div class="w-3 h-3 rounded-sm bg-red-600"></div><span>Gastro</span></div><span class="font-bold">12%</span></div>
+                        <div class="flex items-center justify-between text-xs"><div class="flex items-center gap-2"><div class="w-3 h-3 rounded-sm bg-purple-500"></div><span>Others</span></div><span class="font-bold">8%</span></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ====================== PATIENT ANALYTICS ====================== -->
+        <main id="patient-analytics" class="tab-pane ml-64 p-8 min-h-screen">
+            <header class="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4 mt-4">
+                <div>
+                    <h1 class="font-headline-md text-headline-md text-on-surface">Patient Analytics</h1>
+                    <p class="text-body-sm text-outline">Comprehensive health demographic and registration trends</p>
+                </div>
+                <div class="flex items-center gap-3">
+                    <div class="flex items-center bg-white p-1 rounded-xl shadow-sm border border-slate-200">
+                        <button onclick="setAnalyticsView('monthly', this)" class="px-4 py-2 rounded-lg text-sm font-bold bg-primary text-white shadow-md">Monthly</button>
+                        <button onclick="setAnalyticsView('yearly', this)" class="px-4 py-2 rounded-lg text-sm font-medium bg-slate-50 text-slate-500 hover:text-primary transition-all">Yearly</button>
+                    </div>
+                    <input type="date" id="analyticsDatePicker" value="2026-04-26" onchange="setAnalyticsView('custom', null, this.value)"
+                        class="bg-white border border-slate-200 rounded-xl px-3 py-2 text-sm font-medium text-on-surface outline-none cursor-pointer shadow-sm"/>
+                </div>
+            </header>
+            <p class="text-sm font-semibold text-primary mb-6 bg-blue-50 px-4 py-2 rounded-lg inline-block" id="analyticsViewLabel">Showing: Monthly View (April 2026)</p>
+
+            <div class="grid grid-cols-12 gap-6">
+                <!-- Demographics -->
+                <section class="col-span-12 lg:col-span-5 bg-white rounded-xl border border-outline-variant shadow-[0px_4px_12px_rgba(15,82,186,0.05)] p-5 overflow-hidden flex flex-col">
+                    <div class="flex items-center justify-between mb-6">
+                        <h2 class="font-title-sm text-title-sm">Demographics</h2>
+                        <span class="material-symbols-outlined text-outline">info</span>
+                    </div>
+                    <div class="mb-8">
+                        <h3 class="font-label-caps text-label-caps text-outline mb-4">AGE DISTRIBUTION</h3>
+                        <div class="space-y-4">
+                            <div class="space-y-1"><div class="flex justify-between text-xs font-medium"><span class="text-slate-700">0 – 18 yrs</span><span class="text-primary">12%</span></div><div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary-container rounded-full" style="width:12%"></div></div></div>
+                            <div class="space-y-1"><div class="flex justify-between text-xs font-medium"><span class="text-slate-700">19 – 40 yrs</span><span class="text-primary">28%</span></div><div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary-container rounded-full" style="width:28%"></div></div></div>
+                            <div class="space-y-1"><div class="flex justify-between text-xs font-medium"><span class="text-slate-700">41 – 60 yrs</span><span class="text-primary">35%</span></div><div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary-container rounded-full" style="width:35%"></div></div></div>
+                            <div class="space-y-1"><div class="flex justify-between text-xs font-medium"><span class="text-slate-700">60+ yrs</span><span class="text-primary">25%</span></div><div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary-container rounded-full" style="width:25%"></div></div></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h3 class="font-label-caps text-label-caps text-outline mb-4">GENDER IDENTITY</h3>
+                        <div class="flex justify-between mb-2">
+                            <div class="flex items-center gap-2"><div class="w-3 h-3 rounded-full bg-secondary"></div><span class="text-sm font-semibold">Female (58%)</span></div>
+                            <div class="flex items-center gap-2"><span class="text-sm font-semibold text-right">Male (42%)</span><div class="w-3 h-3 rounded-full bg-primary"></div></div>
+                        </div>
+                        <div class="h-3 w-full flex rounded-full overflow-hidden">
+                            <div class="h-full bg-secondary" style="width:58%"></div>
+                            <div class="h-full bg-primary border-l-2 border-white" style="width:42%"></div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Geographic + Monthly Registration -->
+                <section class="col-span-12 lg:col-span-7 grid grid-cols-1 gap-6">
+                    <div class="bg-white rounded-xl border border-outline-variant shadow-[0px_4px_12px_rgba(15,82,186,0.05)] overflow-hidden flex flex-col" style="height:300px">
+                        <div class="p-5 border-b border-slate-100 flex items-center justify-between">
+                            <div>
+                                <h2 class="font-title-sm text-title-sm">Geographic Patient Density</h2>
+                                <p class="text-xs text-outline">Regional distribution across monitoring centers</p>
+                            </div>
+                            <button onclick="openModal('fullMapModal')" class="text-xs font-bold text-primary bg-blue-50 px-3 py-1.5 rounded-lg hover:bg-blue-100 transition-all flex items-center gap-1">
+                                <span class="material-symbols-outlined text-[16px]">open_in_full</span> Full Map
+                            </button>
+                        </div>
+                        <div class="flex-1 flex flex-col md:flex-row">
+                            <div class="flex-1 relative bg-slate-50 overflow-hidden">
+                                <img class="w-full h-full object-cover opacity-60" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8MJjE_mupVRtbRJZVob-Q4K8fsGZtk3PkWna4ldBOffMHJuAzBdE7aw9UIzXcPKBUgKQMPBTmL5goOVw7h3rjF0KJGzdfLjovOqXnBek94AsIT8sx1MCk9Qa1K3EQ5DGJd3cTq4k5ClKJpUK4B7ZsavtG3oEhhWDJBEtHHRC6VzBdcGoEjSBIdo8qzfGLO-rbIHdxw-F5trT3wBbUsVt6tnzfmOEoP9hxCOQ-MVf7msQM5qMAaoSmbeZIcEdTKP3cccaGFJm1WjnT" alt="Map"/>
+                                <div class="absolute inset-0 bg-gradient-to-t from-white/40 to-transparent"></div>
+                                <div class="absolute top-1/4 left-1/3 w-8 h-8 bg-blue-500/20 rounded-full animate-pulse flex items-center justify-center"><div class="w-3 h-3 bg-blue-600 rounded-full"></div></div>
+                                <div class="absolute top-1/2 left-1/2 w-6 h-6 bg-teal-500/20 rounded-full animate-pulse flex items-center justify-center"><div class="w-2 h-2 bg-teal-600 rounded-full"></div></div>
+                            </div>
+                            <div class="w-full md:w-56 border-l border-slate-100 p-4 overflow-y-auto">
+                                <h3 class="font-label-caps text-label-caps text-outline mb-3">REGION VOLUME</h3>
+                                <div class="space-y-4">
+                                    <div class="flex items-start justify-between"><div><p class="text-sm font-bold">Dhamrai</p><p class="text-xs text-outline">1,248 pts</p></div><div class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">+12%</div></div>
+                                    <div class="flex items-start justify-between"><div><p class="text-sm font-bold">Savar</p><p class="text-xs text-outline">982 pts</p></div><div class="text-xs font-bold text-green-600 bg-green-50 px-2 py-1 rounded">+8%</div></div>
+                                    <div class="flex items-start justify-between"><div><p class="text-sm font-bold">Hemayetpur</p><p class="text-xs text-outline">671 pts</p></div><div class="text-xs font-bold text-blue-600 bg-blue-50 px-2 py-1 rounded">+3%</div></div>
+                                    <div class="flex items-start justify-between"><div><p class="text-sm font-bold">Singair</p><p class="text-xs text-outline">430 pts</p></div><div class="text-xs font-bold text-slate-500 bg-slate-100 px-2 py-1 rounded">+1%</div></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Monthly Patient Registration chart -->
+                    <div class="bg-white rounded-xl border border-outline-variant p-5 shadow-sm">
+                        <h3 class="font-title-sm text-title-sm mb-4">Monthly Patient Registration</h3>
+                        <div class="flex items-end gap-3 h-24">
+                            <div class="flex flex-col items-center gap-1 flex-1"><div class="chart-bar w-full rounded-t" style="height:60%;background:#0f52ba"></div><span class="text-[9px] text-slate-400 font-bold">Oct<br>840</span></div>
+                            <div class="flex flex-col items-center gap-1 flex-1"><div class="chart-bar w-full rounded-t" style="height:72%;background:#0f52ba"></div><span class="text-[9px] text-slate-400 font-bold">Nov<br>980</span></div>
+                            <div class="flex flex-col items-center gap-1 flex-1"><div class="chart-bar w-full rounded-t" style="height:55%;background:#0f52ba"></div><span class="text-[9px] text-slate-400 font-bold">Dec<br>760</span></div>
+                            <div class="flex flex-col items-center gap-1 flex-1"><div class="chart-bar w-full rounded-t" style="height:88%;background:#006a6a"></div><span class="text-[9px] text-slate-400 font-bold">Jan<br>1180</span></div>
+                            <div class="flex flex-col items-center gap-1 flex-1"><div class="chart-bar w-full rounded-t" style="height:80%;background:#0f52ba"></div><span class="text-[9px] text-slate-400 font-bold">Feb<br>1080</span></div>
+                            <div class="flex flex-col items-center gap-1 flex-1"><div class="chart-bar w-full rounded-t" style="height:100%;background:#0f52ba"></div><span class="text-[9px] text-slate-400 font-bold">Apr<br>1350</span></div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+        <!-- ====================== FINANCIAL REPORT ====================== -->
+        <main id="financial-report" class="tab-pane ml-64 p-8 bg-background">
+            <div class="flex items-end justify-between mb-8 mt-4">
+                <div>
+                    <h1 class="font-headline-md text-display-lg text-on-surface">Financial & Service Reports</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <select id="financialMonthSelect" onchange="updateFinancialData()" class="appearance-none bg-white border border-outline-variant px-4 py-2.5 rounded-xl font-body-md shadow-sm">
+                        <option value="apr">April 2026</option>
+                        <option value="feb">February 2026</option>
+                        <option value="jan">January 2026</option>
+                    </select>
+                    <button onclick="exportFinancialPDF()" class="flex items-center gap-2 px-4 py-2.5 bg-primary text-on-primary rounded-xl font-body-md shadow-md hover:bg-on-primary-fixed-variant transition-all">
+                        <span class="material-symbols-outlined">download</span> Export PDF
+                    </button>
+                </div>
+            </div>
+
+            <section class="mb-10">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="material-symbols-outlined text-primary">account_balance_wallet</span>
+                    <h2 class="font-title-sm text-headline-md">Financial Summary</h2>
+                </div>
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <p class="text-slate-500 font-label-caps mb-1">TOTAL REVENUE</p>
+                        <h3 class="text-3xl font-extrabold text-green-700" id="fin-revenue">৳ 4,82,900</h3>
+                        <div class="space-y-3 mt-4">
+                            <div class="flex justify-between text-body-sm"><span class="text-slate-500">Service Fees</span><span class="font-semibold text-slate-700">৳ 3,12,400</span></div>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden"><div class="bg-green-500 h-full w-[65%]"></div></div>
+                            <div class="flex justify-between text-body-sm"><span class="text-slate-500">Govt. Subsidy</span><span class="font-semibold text-slate-700">৳ 1,70,500</span></div>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden"><div class="bg-green-300 h-full w-[35%]"></div></div>
+                        </div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <p class="text-slate-500 font-label-caps mb-1">OPERATING EXPENSES</p>
+                        <h3 class="text-3xl font-extrabold text-red-700" id="fin-expenses">৳ 3,18,250</h3>
+                        <div class="space-y-3 mt-4">
+                            <div class="flex justify-between text-body-sm"><span class="text-slate-500">Salaries & Benefits</span><span class="font-semibold text-slate-700">৳ 2,10,000</span></div>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden"><div class="bg-red-500 h-full w-[66%]"></div></div>
+                            <div class="flex justify-between text-body-sm"><span class="text-slate-500">Medical Supplies</span><span class="font-semibold text-slate-700">৳ 78,250</span></div>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden"><div class="bg-red-400 h-full w-[24%]"></div></div>
+                        </div>
+                    </div>
+                    <div class="bg-primary p-5 rounded-xl border border-primary-container shadow-sm text-white flex flex-col justify-between">
+                        <div>
+                            <p class="text-blue-200 font-label-caps mb-1">CALCULATED NET BALANCE</p>
+                            <h3 class="text-4xl font-extrabold" id="fin-balance">৳ 1,64,650</h3>
+                        </div>
+                        <div class="mt-8"><p class="text-xs text-blue-100 leading-tight">Net growth increased by 8.4% compared to previous month.</p></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mb-10">
+                <div class="flex items-center gap-2 mb-4">
+                    <span class="material-symbols-outlined text-secondary">medical_services</span>
+                    <h2 class="font-title-sm text-headline-md">Service Statistics</h2>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-primary text-[22px]">stethoscope</span><span class="font-bold text-sm text-slate-700">General Consultation</span></div>
+                        <p class="text-2xl font-extrabold text-slate-900 mb-1">1,842</p>
+                        <div class="flex items-center gap-2 text-xs font-bold text-green-600"><span class="material-symbols-outlined text-[14px]">trending_up</span>+14.2% vs last month</div>
+                        <div class="mt-3 h-1.5 w-full bg-slate-100 rounded-full"><div class="h-full bg-primary rounded-full" style="width:72%"></div></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-pink-500 text-[22px]">pregnant_woman</span><span class="font-bold text-sm text-slate-700">Maternal Health</span></div>
+                        <p class="text-2xl font-extrabold text-slate-900 mb-1">348</p>
+                        <div class="flex items-center gap-2 text-xs font-bold text-green-600"><span class="material-symbols-outlined text-[14px]">trending_up</span>+6.1% vs last month</div>
+                        <div class="mt-3 h-1.5 w-full bg-slate-100 rounded-full"><div class="h-full bg-pink-400 rounded-full" style="width:45%"></div></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-amber-500 text-[22px]">child_care</span><span class="font-bold text-sm text-slate-700">Child Health</span></div>
+                        <p class="text-2xl font-extrabold text-slate-900 mb-1">512</p>
+                        <div class="flex items-center gap-2 text-xs font-bold text-red-500"><span class="material-symbols-outlined text-[14px]">trending_down</span>-2.3% vs last month</div>
+                        <div class="mt-3 h-1.5 w-full bg-slate-100 rounded-full"><div class="h-full bg-amber-400 rounded-full" style="width:55%"></div></div>
+                    </div>
+                    <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-2 mb-3"><span class="material-symbols-outlined text-red-500 text-[22px]">emergency</span><span class="font-bold text-sm text-slate-700">Emergency Cases</span></div>
+                        <p class="text-2xl font-extrabold text-slate-900 mb-1">87</p>
+                        <div class="flex items-center gap-2 text-xs font-bold text-green-600"><span class="material-symbols-outlined text-[14px]">trending_up</span>+3.7% vs last month</div>
+                        <div class="mt-3 h-1.5 w-full bg-slate-100 rounded-full"><div class="h-full bg-red-400 rounded-full" style="width:22%"></div></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="mt-6">
+                <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                    <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+                        <h3 class="font-title-sm text-slate-900">Recent Transactions</h3>
+                        <div class="flex gap-2">
+                            <button onclick="filterTx('all')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-primary text-white" id="txBtn-all">All</button>
+                            <button onclick="filterTx('income')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-green-100 hover:text-green-700 transition-all" id="txBtn-income">Income</button>
+                            <button onclick="filterTx('expense')" class="text-xs font-bold px-3 py-1.5 rounded-lg bg-slate-100 text-slate-600 hover:bg-red-100 hover:text-red-700 transition-all" id="txBtn-expense">Expense</button>
+                        </div>
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left font-data-tabular">
+                            <thead><tr class="bg-slate-50 text-slate-500 text-xs font-label-caps border-b border-slate-200"><th class="px-6 py-3">Date</th><th class="px-6 py-3">Reference</th><th class="px-6 py-3">Category</th><th class="px-6 py-3 text-right">Amount (৳)</th></tr></thead>
+                            <tbody class="divide-y divide-slate-100" id="txTableBody">
+                                <tr class="hover:bg-blue-50/30 transition-colors tx-row income"><td class="px-6 py-4 text-slate-700">Apr 26, 2026</td><td class="px-6 py-4 font-mono text-xs">INV-2026-112</td><td class="px-6 py-4"><span class="px-2 py-1 rounded bg-blue-100 text-blue-700 text-[10px] font-bold uppercase">Subsidy</span></td><td class="px-6 py-4 text-right font-bold text-green-700">+৳ 42,500</td></tr>
+                                <tr class="hover:bg-blue-50/30 transition-colors tx-row expense"><td class="px-6 py-4 text-slate-700">Apr 25, 2026</td><td class="px-6 py-4 font-mono text-xs">PO-MD-4488</td><td class="px-6 py-4"><span class="px-2 py-1 rounded bg-red-100 text-red-700 text-[10px] font-bold uppercase">Supplies</span></td><td class="px-6 py-4 text-right font-bold text-red-700">-৳ 8,200</td></tr>
+                                <tr class="hover:bg-blue-50/30 transition-colors tx-row income"><td class="px-6 py-4 text-slate-700">Apr 24, 2026</td><td class="px-6 py-4 font-mono text-xs">INV-2026-110</td><td class="px-6 py-4"><span class="px-2 py-1 rounded bg-green-100 text-green-700 text-[10px] font-bold uppercase">Service Fee</span></td><td class="px-6 py-4 text-right font-bold text-green-700">+৳ 28,750</td></tr>
+                                <tr class="hover:bg-blue-50/30 transition-colors tx-row expense"><td class="px-6 py-4 text-slate-700">Apr 23, 2026</td><td class="px-6 py-4 font-mono text-xs">PO-SA-3301</td><td class="px-6 py-4"><span class="px-2 py-1 rounded bg-orange-100 text-orange-700 text-[10px] font-bold uppercase">Salaries</span></td><td class="px-6 py-4 text-right font-bold text-red-700">-৳ 1,75,000</td></tr>
+                                <tr class="hover:bg-blue-50/30 transition-colors tx-row income"><td class="px-6 py-4 text-slate-700">Apr 22, 2026</td><td class="px-6 py-4 font-mono text-xs">INV-2026-108</td><td class="px-6 py-4"><span class="px-2 py-1 rounded bg-green-100 text-green-700 text-[10px] font-bold uppercase">Service Fee</span></td><td class="px-6 py-4 text-right font-bold text-green-700">+৳ 19,400</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <!-- ====================== MEDICAL INVENTORY ====================== -->
+        <main id="medical-inventory" class="tab-pane ml-64 p-8 min-h-screen">
+            <div class="max-w-7xl mx-auto mt-4">
+                <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+                    <div>
+                        <h2 class="font-h1 text-h1 text-on-surface">Medical Inventory & Procurement</h2>
+                        <p class="text-body-md text-secondary mt-1">Real-time stock monitoring and replenishment control.</p>
+                    </div>
+                    <div class="flex gap-3">
+                        <button onclick="generateInventoryReport()" class="px-5 py-2.5 bg-secondary text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+                            <span class="material-symbols-outlined">picture_as_pdf</span> New Report
+                        </button>
+                        <button onclick="openModal('restockModal')" class="px-5 py-2.5 bg-primary text-white rounded-xl font-semibold shadow-lg transition-all flex items-center gap-2">
+                            <span class="material-symbols-outlined">shopping_cart</span> Restock Request
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-12 gap-gutter mb-8">
+                    <div class="col-span-12 lg:col-span-8">
+                        <div class="bg-white rounded-xl border border-outline-variant custom-shadow overflow-hidden">
+                            <div class="px-md py-4 border-b border-outline-variant flex justify-between items-center bg-surface-container-lowest">
+                                <h3 class="font-h3 text-h3">Stock Status Table</h3>
+                                <div class="flex items-center gap-2">
+                                    <input type="text" placeholder="Search items..." oninput="filterInventory(this.value)" class="text-sm border border-slate-200 rounded-lg px-3 py-1.5 outline-none focus:border-primary"/>
+                                </div>
+                            </div>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-left border-collapse" id="inventoryTable">
+                                    <thead class="bg-surface-container-low text-label-caps text-secondary">
+                                        <tr>
+                                            <th class="px-md py-3 font-bold uppercase tracking-wider border-b border-outline-variant">Category</th>
+                                            <th class="px-md py-3 font-bold uppercase tracking-wider border-b border-outline-variant">Item Name</th>
+                                            <th class="px-md py-3 font-bold uppercase tracking-wider border-b border-outline-variant text-center">Qty</th>
+                                            <th class="px-md py-3 font-bold uppercase tracking-wider border-b border-outline-variant">Expiry</th>
+                                            <th class="px-md py-3 font-bold uppercase tracking-wider border-b border-outline-variant">Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="divide-y divide-outline-variant" id="inventoryBody">
+                                        <tr class="hover:bg-surface-container-lowest inv-row">
+                                            <td class="px-md py-3 text-xs font-bold text-secondary uppercase">Medicine</td>
+                                            <td class="px-md py-3 font-medium">Amoxicillin 500mg</td>
+                                            <td class="px-md py-3 text-center font-bold">1,240</td>
+                                            <td class="px-md py-3 text-xs text-slate-500">Dec 2026</td>
+                                            <td class="px-md py-3"><span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">Normal</span></td>
+                                        </tr>
+                                        <tr class="hover:bg-surface-container-lowest bg-yellow-50 inv-row">
+                                            <td class="px-md py-3 text-xs font-bold text-secondary uppercase">Medicine</td>
+                                            <td class="px-md py-3 font-medium flex items-center gap-1"><span class="material-symbols-outlined text-amber-500 text-[16px]">warning</span> Ibuprofen 400mg</td>
+                                            <td class="px-md py-3 text-center font-bold text-red-600">0</td>
+                                            <td class="px-md py-3 text-xs text-slate-500">—</td>
+                                            <td class="px-md py-3"><span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full">Out of Stock</span></td>
+                                        </tr>
+                                        <tr class="hover:bg-surface-container-lowest bg-yellow-50 inv-row">
+                                            <td class="px-md py-3 text-xs font-bold text-secondary uppercase">Equipment</td>
+                                            <td class="px-md py-3 font-medium flex items-center gap-1"><span class="material-symbols-outlined text-amber-500 text-[16px]">warning</span> Surgical Gloves (M)</td>
+                                            <td class="px-md py-3 text-center font-bold text-amber-600">5</td>
+                                            <td class="px-md py-3 text-xs text-slate-500">N/A</td>
+                                            <td class="px-md py-3"><span class="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-full">Low Stock</span></td>
+                                        </tr>
+                                        <tr class="hover:bg-surface-container-lowest inv-row">
+                                            <td class="px-md py-3 text-xs font-bold text-secondary uppercase">Equipment</td>
+                                            <td class="px-md py-3 font-medium">IV Drip Sets</td>
+                                            <td class="px-md py-3 text-center font-bold">340</td>
+                                            <td class="px-md py-3 text-xs text-slate-500">N/A</td>
+                                            <td class="px-md py-3"><span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">Normal</span></td>
+                                        </tr>
+                                        <tr class="hover:bg-surface-container-lowest bg-red-50 inv-row">
+                                            <td class="px-md py-3 text-xs font-bold text-secondary uppercase">Medicine</td>
+                                            <td class="px-md py-3 font-medium flex items-center gap-1"><span class="material-symbols-outlined text-red-500 text-[16px]">error</span> Epinephrine Vials</td>
+                                            <td class="px-md py-3 text-center font-bold text-red-600">2</td>
+                                            <td class="px-md py-3 text-xs text-slate-500">Mar 2027</td>
+                                            <td class="px-md py-3"><span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full">Out of Stock</span></td>
+                                        </tr>
+                                        <tr class="hover:bg-surface-container-lowest inv-row">
+                                            <td class="px-md py-3 text-xs font-bold text-secondary uppercase">Supplies</td>
+                                            <td class="px-md py-3 font-medium">Bandages (Roll)</td>
+                                            <td class="px-md py-3 text-center font-bold">820</td>
+                                            <td class="px-md py-3 text-xs text-slate-500">N/A</td>
+                                            <td class="px-md py-3"><span class="px-3 py-1 bg-green-100 text-green-700 text-xs font-bold rounded-full">Normal</span></td>
+                                        </tr>
+                                        <tr class="hover:bg-surface-container-lowest inv-row">
+                                            <td class="px-md py-3 text-xs font-bold text-secondary uppercase">Medicine</td>
+                                            <td class="px-md py-3 font-medium flex items-center gap-1"><span class="material-symbols-outlined text-red-500 text-[16px]">error</span> Vaccines (Stock)</td>
+                                            <td class="px-md py-3 text-center font-bold text-red-600">10%</td>
+                                            <td class="px-md py-3 text-xs text-slate-500">Jun 2026</td>
+                                            <td class="px-md py-3"><span class="px-3 py-1 bg-red-100 text-red-700 text-xs font-bold rounded-full">Critical</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-span-12 lg:col-span-4 space-y-gutter">
+                        <div class="bg-white rounded-xl border-l-4 border-error custom-shadow p-md">
+                            <div class="flex items-center gap-2 text-error mb-4">
+                                <span class="material-symbols-outlined fill-icon">report</span>
+                                <h3 class="font-h3 text-h3">Critical Low</h3>
+                            </div>
+                            <div class="space-y-3">
+                                <div class="p-3 bg-red-50 rounded-lg border border-red-200 flex justify-between items-center"><div><p class="font-bold text-on-surface text-body-md">Surgical Gloves (M)</p><p class="text-error font-semibold text-xs">5 boxes left</p></div><span class="material-symbols-outlined text-amber-500">warning</span></div>
+                                <div class="p-3 bg-red-50 rounded-lg border border-red-200 flex justify-between items-center"><div><p class="font-bold text-on-surface text-body-md">Ibuprofen 400mg</p><p class="text-error font-semibold text-xs">Out of Stock</p></div><span class="material-symbols-outlined text-red-500">error</span></div>
+                                <div class="p-3 bg-red-50 rounded-lg border border-red-200 flex justify-between items-center"><div><p class="font-bold text-on-surface text-body-md">Epinephrine Vials</p><p class="text-error font-semibold text-xs">Only 2 left</p></div><span class="material-symbols-outlined text-red-500">error</span></div>
+                                <div class="p-3 bg-red-50 rounded-lg border border-red-200 flex justify-between items-center"><div><p class="font-bold text-on-surface text-body-md">Vaccines</p><p class="text-error font-semibold text-xs">10% remaining</p></div><span class="material-symbols-outlined text-red-500">error</span></div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-xl border border-slate-200 custom-shadow p-md">
+                            <h3 class="font-bold text-sm text-slate-700 mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-primary text-[18px]">pending_actions</span> Pending Orders</h3>
+                            <div class="space-y-2 mb-5">
+                                <div class="flex justify-between text-xs p-2 bg-slate-50 rounded-lg"><span class="font-semibold">Ibuprofen 400mg</span><span class="font-bold text-amber-600">Processing</span></div>
+                                <div class="flex justify-between text-xs p-2 bg-slate-50 rounded-lg"><span class="font-semibold">Epinephrine Vials</span><span class="font-bold text-blue-600">Ordered</span></div>
+                                <div class="flex justify-between text-xs p-2 bg-slate-50 rounded-lg"><span class="font-semibold">Surgical Gloves (M)</span><span class="font-bold text-slate-400">Pending</span></div>
+                                <div class="flex justify-between text-xs p-2 bg-slate-50 rounded-lg"><span class="font-semibold">Vaccines (Multi)</span><span class="font-bold text-red-500">Urgent</span></div>
+                            </div>
+                            <h3 class="font-bold text-sm text-slate-700 mb-3 flex items-center gap-2"><span class="material-symbols-outlined text-secondary text-[18px]">payments</span> Monthly Spend</h3>
+                            <div class="p-3 bg-blue-50 rounded-xl">
+                                <p class="text-2xl font-extrabold text-primary">৳ 78,250</p>
+                                <p class="text-xs text-slate-500 mt-1">April 2026 procurement</p>
+                                <div class="mt-2 h-1.5 w-full bg-slate-200 rounded-full"><div class="h-full bg-primary rounded-full" style="width:62%"></div></div>
+                                <p class="text-[10px] text-slate-400 mt-1">62% of monthly budget</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- ====================== PERFORMANCE METRICS ====================== -->
+        <main id="performance-matrics" class="tab-pane pl-64 min-h-screen">
+            <div class="p-10 max-w-7xl mx-auto">
+                <header class="mb-10 mt-4">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <p class="text-primary font-bold text-label-caps mb-2 tracking-[0.1em]">UNIT ANALYTICS</p>
+                            <h1 class="font-display-lg text-display-lg text-on-surface">Performance Metrics</h1>
+                        </div>
+                        <button onclick="exportPerformancePDF()" class="flex items-center gap-2 px-5 py-2.5 bg-primary text-white rounded-xl font-semibold shadow-md hover:shadow-lg transition-all">
+                            <span class="material-symbols-outlined">picture_as_pdf</span> Export Report
+                        </button>
+                    </div>
+                </header>
+
+                <section class="mb-10">
+                    <h2 class="font-headline-md text-xl mb-6 flex items-center gap-3 text-slate-900">
+                        <span class="material-symbols-outlined text-secondary bg-secondary/10 p-1.5 rounded-lg">diversity_3</span>
+                        CHW Outreach Metrics
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="bento-card-gradient p-8 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                            <span class="material-symbols-outlined text-secondary text-4xl mb-6">home_health</span>
+                            <h3 class="text-slate-500 font-bold text-xs uppercase tracking-widest mb-2">Home Visits</h3>
+                            <div class="flex items-baseline gap-3"><span class="text-5xl font-extrabold text-slate-900 tracking-tight">1,284</span></div>
+                            <p class="text-xs text-slate-400 mt-4 font-medium">Target: 1,150 visits/mo</p>
+                            <div class="mt-2 h-1.5 w-full bg-slate-200 rounded-full"><div class="h-full bg-secondary rounded-full" style="width:88%"></div></div>
+                            <p class="text-[10px] text-slate-400 mt-1">111% of target achieved</p>
+                        </div>
+                        <div class="bento-card-gradient p-8 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                            <span class="material-symbols-outlined text-primary text-4xl mb-6">map</span>
+                            <h3 class="text-slate-500 font-bold text-xs uppercase tracking-widest mb-2">Villages Covered</h3>
+                            <div class="flex items-baseline gap-2"><span class="text-5xl font-extrabold text-slate-900 tracking-tight">42</span><span class="text-slate-400 text-xl font-bold">/ 45</span></div>
+                            <p class="text-xs text-slate-400 mt-4 font-medium">93% area coverage</p>
+                            <div class="mt-2 h-1.5 w-full bg-slate-200 rounded-full"><div class="h-full bg-primary rounded-full" style="width:93%"></div></div>
+                        </div>
+                        <!-- Health Education Panel -->
+                        <div class="bento-card-gradient p-8 rounded-2xl border border-slate-200 shadow-sm relative overflow-hidden">
+                            <span class="material-symbols-outlined text-amber-500 text-4xl mb-6">school</span>
+                            <h3 class="text-slate-500 font-bold text-xs uppercase tracking-widest mb-2">Health Education</h3>
+                            <div class="flex items-baseline gap-2"><span class="text-5xl font-extrabold text-slate-900 tracking-tight">28</span><span class="text-xs text-slate-400 self-end mb-1 font-bold">programs</span></div>
+                            <p class="text-xs text-slate-400 mt-2 font-medium">1,840 participants this month</p>
+                            <div class="mt-3 h-1.5 w-full bg-slate-200 rounded-full"><div class="h-full bg-amber-400 rounded-full" style="width:78%"></div></div>
+                            <p class="text-[10px] text-slate-400 mt-1">78% of monthly target</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Health Education Detail -->
+                <section class="mb-10">
+                    <h2 class="font-headline-md text-xl mb-6 flex items-center gap-3 text-slate-900">
+                        <span class="material-symbols-outlined text-amber-500 bg-amber-50 p-1.5 rounded-lg">school</span>
+                        Health Education Programs
+                    </h2>
+                    <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden">
+                        <div class="grid grid-cols-1 md:grid-cols-4 divide-y md:divide-y-0 md:divide-x divide-slate-100">
+                            <div class="p-6 text-center">
+                                <p class="text-slate-500 text-xs uppercase font-bold tracking-widest mb-2">Programs Run</p>
+                                <p class="text-4xl font-extrabold text-slate-900">28</p>
+                                <p class="text-xs text-green-600 font-bold mt-1">↑ +4 vs last month</p>
+                            </div>
+                            <div class="p-6 text-center">
+                                <p class="text-slate-500 text-xs uppercase font-bold tracking-widest mb-2">Participants</p>
+                                <p class="text-4xl font-extrabold text-slate-900">1,840</p>
+                                <p class="text-xs text-green-600 font-bold mt-1">↑ +12%</p>
+                            </div>
+                            <div class="p-6 text-center">
+                                <p class="text-slate-500 text-xs uppercase font-bold tracking-widest mb-2">Coverage Rate</p>
+                                <p class="text-4xl font-extrabold text-slate-900">78%</p>
+                                <p class="text-xs text-amber-600 font-bold mt-1">of monthly target</p>
+                            </div>
+                            <div class="p-6 text-center">
+                                <p class="text-slate-500 text-xs uppercase font-bold tracking-widest mb-2">Topics</p>
+                                <div class="flex flex-wrap gap-1 justify-center mt-2">
+                                    <span class="text-[10px] bg-blue-50 text-blue-700 px-2 py-0.5 rounded-full font-bold">Nutrition</span>
+                                    <span class="text-[10px] bg-green-50 text-green-700 px-2 py-0.5 rounded-full font-bold">Hygiene</span>
+                                    <span class="text-[10px] bg-amber-50 text-amber-700 px-2 py-0.5 rounded-full font-bold">Maternal</span>
+                                    <span class="text-[10px] bg-purple-50 text-purple-700 px-2 py-0.5 rounded-full font-bold">Child Care</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Medical Practitioner Performance -->
+                <section>
+                    <h2 class="font-headline-md text-xl mb-6 flex items-center gap-3 text-slate-900">
+                        <span class="material-symbols-outlined text-primary bg-primary/10 p-1.5 rounded-lg">medical_information</span>
+                        Medical Practitioner Performance
+                    </h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                            <div class="h-1.5 w-full bg-primary"></div>
+                            <div class="p-6 text-center flex-grow">
+                                <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center mx-auto mb-3"><span class="material-symbols-outlined text-primary text-[28px]">person</span></div>
+                                <h3 class="font-bold text-lg text-slate-900">Dr. Rahman</h3>
+                                <p class="text-sm text-primary font-bold uppercase tracking-wider mt-1">Cardiology</p>
+                                <div class="flex justify-center gap-1 mt-3" id="stars-rahman"></div>
+                                <p class="text-xs text-slate-400 mt-1 font-bold">Excellent</p>
+                            </div>
+                            <div class="px-5 py-4 bg-slate-50 border-t border-slate-100">
+                                <div class="flex justify-between text-xs font-medium"><span class="text-slate-500 uppercase tracking-tight">Success Rate</span><span class="text-green-600 font-bold">98.2%</span></div>
+                                <div class="mt-2 h-1.5 w-full bg-slate-200 rounded-full"><div class="h-full bg-green-500 rounded-full" style="width:98%"></div></div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                            <div class="h-1.5 w-full bg-amber-500"></div>
+                            <div class="p-6 text-center flex-grow">
+                                <div class="w-12 h-12 rounded-full bg-amber-50 flex items-center justify-center mx-auto mb-3"><span class="material-symbols-outlined text-amber-500 text-[28px]">person</span></div>
+                                <h3 class="font-bold text-lg text-slate-900">Dr. Patel</h3>
+                                <p class="text-sm text-amber-600 font-bold uppercase tracking-wider mt-1">General Practice</p>
+                                <div class="flex justify-center gap-1 mt-3" id="stars-patel"></div>
+                                <p class="text-xs text-slate-400 mt-1 font-bold">Good</p>
+                            </div>
+                            <div class="px-5 py-4 bg-slate-50 border-t border-slate-100">
+                                <div class="flex justify-between text-xs font-medium"><span class="text-slate-500 uppercase tracking-tight">Success Rate</span><span class="text-amber-600 font-bold">84.0%</span></div>
+                                <div class="mt-2 h-1.5 w-full bg-slate-200 rounded-full"><div class="h-full bg-amber-400 rounded-full" style="width:84%"></div></div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                            <div class="h-1.5 w-full bg-secondary"></div>
+                            <div class="p-6 text-center flex-grow">
+                                <div class="w-12 h-12 rounded-full bg-teal-50 flex items-center justify-center mx-auto mb-3"><span class="material-symbols-outlined text-secondary text-[28px]">person</span></div>
+                                <h3 class="font-bold text-lg text-slate-900">Dr. Akter</h3>
+                                <p class="text-sm text-secondary font-bold uppercase tracking-wider mt-1">Pediatrics</p>
+                                <div class="flex justify-center gap-1 mt-3" id="stars-akter"></div>
+                                <p class="text-xs text-slate-400 mt-1 font-bold">Good</p>
+                            </div>
+                            <div class="px-5 py-4 bg-slate-50 border-t border-slate-100">
+                                <div class="flex justify-between text-xs font-medium"><span class="text-slate-500 uppercase tracking-tight">Success Rate</span><span class="text-green-600 font-bold">92.5%</span></div>
+                                <div class="mt-2 h-1.5 w-full bg-slate-200 rounded-full"><div class="h-full bg-secondary rounded-full" style="width:93%"></div></div>
+                            </div>
+                        </div>
+                        <div class="bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
+                            <div class="h-1.5 w-full bg-red-500"></div>
+                            <div class="p-6 text-center flex-grow">
+                                <div class="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mx-auto mb-3"><span class="material-symbols-outlined text-red-500 text-[28px]">person</span></div>
+                                <h3 class="font-bold text-lg text-slate-900">Dr. Islam</h3>
+                                <p class="text-sm text-red-500 font-bold uppercase tracking-wider mt-1">Surgery</p>
+                                <div class="flex justify-center gap-1 mt-3" id="stars-islam"></div>
+                                <p class="text-xs text-slate-400 mt-1 font-bold">Average</p>
+                            </div>
+                            <div class="px-5 py-4 bg-slate-50 border-t border-slate-100">
+                                <div class="flex justify-between text-xs font-medium"><span class="text-slate-500 uppercase tracking-tight">Success Rate</span><span class="text-amber-600 font-bold">76.4%</span></div>
+                                <div class="mt-2 h-1.5 w-full bg-slate-200 rounded-full"><div class="h-full bg-red-400 rounded-full" style="width:76%"></div></div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+
+    </div>
+</div>
+
+<!-- ====================== MODALS ====================== -->
+
+<!-- Profile Info Modal -->
+<div class="modal-overlay" id="profileInfoModal">
+    <div class="modal-box">
+        <button onclick="closeModal('profileInfoModal')" style="position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;font-size:1.3rem;color:#94a3b8;">✕</button>
+        <div class="text-center mb-6">
+            <img src="https://ui-avatars.com/api/?name=Sarah+Jenkins&background=003c90&color=fff&bold=true&size=96" class="w-20 h-20 rounded-full border-3 border-primary mx-auto mb-3" alt=""/>
+            <h2 class="text-xl font-bold text-slate-900">Dr. Sarah Jenkins</h2>
+            <p class="text-sm text-primary font-semibold">Chief Medical Officer</p>
+        </div>
+        <ul class="divide-y divide-slate-100 mb-6">
+            <li class="flex justify-between py-3 text-sm"><span class="font-bold flex items-center gap-2"><span class="material-symbols-outlined text-primary text-[18px]">badge</span> Employee ID</span><span class="text-slate-500">CMO-0042</span></li>
+            <li class="flex justify-between py-3 text-sm"><span class="font-bold flex items-center gap-2"><span class="material-symbols-outlined text-primary text-[18px]">business</span> Department</span><span class="text-slate-500">Administration</span></li>
+            <li class="flex justify-between py-3 text-sm"><span class="font-bold flex items-center gap-2"><span class="material-symbols-outlined text-primary text-[18px]">phone</span> Contact</span><span class="text-slate-500">+880 1700-000001</span></li>
+            <li class="flex justify-between py-3 text-sm"><span class="font-bold flex items-center gap-2"><span class="material-symbols-outlined text-primary text-[18px]">schedule</span> Shift</span><span class="text-slate-500">08:00 AM – 04:00 PM</span></li>
+            <li class="flex justify-between py-3 text-sm"><span class="font-bold flex items-center gap-2"><span class="material-symbols-outlined text-primary text-[18px]">email</span> Email</span><span class="text-slate-500">s.jenkins@healthbd.gov</span></li>
+        </ul>
+        <button onclick="handleLogout()" class="w-full bg-error text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-red-700 transition-all">
+            <span class="material-symbols-outlined">logout</span> Logout
+        </button>
+    </div>
+</div>
+
+<!-- Emergency Alert Modal -->
+<div class="modal-overlay" id="emergencyAlertModal">
+    <div class="modal-box">
+        <button onclick="closeModal('emergencyAlertModal')" style="position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;font-size:1.3rem;color:#94a3b8;">✕</button>
+        <div class="flex items-center gap-3 mb-5">
+            <div class="p-2.5 bg-red-100 rounded-xl"><span class="material-symbols-outlined text-error text-2xl">campaign</span></div>
+            <div><h2 class="text-xl font-bold text-slate-900">Emergency Alert</h2><p class="text-sm text-slate-500">Send an urgent alert to all clinic members</p></div>
+        </div>
+        <div class="mb-4">
+            <label class="form-label-style">Alert Type</label>
+            <select id="alertType" class="form-input-style">
+                <option value="">Select alert type...</option>
+                <option>Code Red — Medical Emergency</option>
+                <option>Critical Stock Alert</option>
+                <option>Staff Emergency</option>
+                <option>Patient Safety Alert</option>
+                <option>System Notice</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="form-label-style">Alert Message / Note</label>
+            <textarea id="alertNote" class="form-input-style" placeholder="Write the important note or alert message here..."></textarea>
+        </div>
+        <div class="mb-5">
+            <label class="form-label-style">Send To</label>
+            <div class="flex gap-3 flex-wrap mt-1">
+                <label class="flex items-center gap-2 text-sm font-medium cursor-pointer"><input type="checkbox" checked class="rounded"> All Members</label>
+                <label class="flex items-center gap-2 text-sm font-medium cursor-pointer"><input type="checkbox"> Doctors Only</label>
+                <label class="flex items-center gap-2 text-sm font-medium cursor-pointer"><input type="checkbox"> Nurses Only</label>
+                <label class="flex items-center gap-2 text-sm font-medium cursor-pointer"><input type="checkbox"> Admin Only</label>
+            </div>
+        </div>
+        <button onclick="sendAlert()" class="w-full bg-error text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-red-700 transition-all">
+            <span class="material-symbols-outlined">send</span> Send Alert Now
+        </button>
+    </div>
+</div>
+
+<!-- Total Patients Modal -->
+<div class="modal-overlay" id="totalPatientsModal">
+    <div class="modal-box wide">
+        <button onclick="closeModal('totalPatientsModal')" style="position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;font-size:1.3rem;color:#94a3b8;">✕</button>
+        <div class="mb-4 flex items-center justify-between">
+            <div>
+                <h2 class="text-xl font-bold text-slate-900">All Patients</h2>
+                <p class="text-sm text-slate-500">Total: 12,480 registered patients</p>
+            </div>
+            <input type="text" placeholder="Search patients..." class="text-sm border border-slate-200 rounded-lg px-3 py-1.5 outline-none focus:border-primary" oninput="filterPatients(this.value)"/>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-sm">
+                <thead><tr class="bg-slate-50 border-b border-slate-200 text-xs font-bold text-slate-500 uppercase"><th class="px-4 py-3">Patient ID</th><th class="px-4 py-3">Name</th><th class="px-4 py-3">Age</th><th class="px-4 py-3">Condition</th><th class="px-4 py-3">Last Visit</th></tr></thead>
+                <tbody class="divide-y divide-slate-100" id="patientTableBody">
+                    <tr onclick="openModal('patientDetailModal')" class="hover:bg-blue-50 cursor-pointer patient-row"><td class="px-4 py-3 font-mono text-xs">PT-0001</td><td class="px-4 py-3 font-semibold">Fatima Begum</td><td class="px-4 py-3">45</td><td class="px-4 py-3"><span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">Hypertension</span></td><td class="px-4 py-3 text-slate-500">Apr 26, 2026</td></tr>
+                    <tr onclick="openModal('patientDetailModal')" class="hover:bg-blue-50 cursor-pointer patient-row"><td class="px-4 py-3 font-mono text-xs">PT-0002</td><td class="px-4 py-3 font-semibold">Rahim Uddin</td><td class="px-4 py-3">62</td><td class="px-4 py-3"><span class="px-2 py-0.5 bg-red-100 text-red-700 rounded-full text-xs font-bold">Diabetes</span></td><td class="px-4 py-3 text-slate-500">Apr 25, 2026</td></tr>
+                    <tr onclick="openModal('patientDetailModal')" class="hover:bg-blue-50 cursor-pointer patient-row"><td class="px-4 py-3 font-mono text-xs">PT-0003</td><td class="px-4 py-3 font-semibold">Ayesha Siddiqua</td><td class="px-4 py-3">30</td><td class="px-4 py-3"><span class="px-2 py-0.5 bg-green-100 text-green-700 rounded-full text-xs font-bold">Post-op</span></td><td class="px-4 py-3 text-slate-500">Apr 24, 2026</td></tr>
+                    <tr onclick="openModal('patientDetailModal')" class="hover:bg-blue-50 cursor-pointer patient-row"><td class="px-4 py-3 font-mono text-xs">PT-0004</td><td class="px-4 py-3 font-semibold">Karim Hossain</td><td class="px-4 py-3">55</td><td class="px-4 py-3"><span class="px-2 py-0.5 bg-purple-100 text-purple-700 rounded-full text-xs font-bold">Respiratory</span></td><td class="px-4 py-3 text-slate-500">Apr 23, 2026</td></tr>
+                    <tr onclick="openModal('patientDetailModal')" class="hover:bg-blue-50 cursor-pointer patient-row"><td class="px-4 py-3 font-mono text-xs">PT-0005</td><td class="px-4 py-3 font-semibold">Nasrin Akter</td><td class="px-4 py-3">38</td><td class="px-4 py-3"><span class="px-2 py-0.5 bg-blue-100 text-blue-700 rounded-full text-xs font-bold">General</span></td><td class="px-4 py-3 text-slate-500">Apr 22, 2026</td></tr>
+                    <tr onclick="openModal('patientDetailModal')" class="hover:bg-blue-50 cursor-pointer patient-row"><td class="px-4 py-3 font-mono text-xs">PT-0006</td><td class="px-4 py-3 font-semibold">Jahangir Alam</td><td class="px-4 py-3">70</td><td class="px-4 py-3"><span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full text-xs font-bold">Hypertension</span></td><td class="px-4 py-3 text-slate-500">Apr 21, 2026</td></tr>
+                    <tr onclick="openModal('patientDetailModal')" class="hover:bg-blue-50 cursor-pointer patient-row"><td class="px-4 py-3 font-mono text-xs">PT-0007</td><td class="px-4 py-3 font-semibold">Roksana Khatun</td><td class="px-4 py-3">28</td><td class="px-4 py-3"><span class="px-2 py-0.5 bg-pink-100 text-pink-700 rounded-full text-xs font-bold">Maternal</span></td><td class="px-4 py-3 text-slate-500">Apr 20, 2026</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <p class="text-xs text-slate-400 mt-4 text-center">Showing 7 of 12,480 patients. Use search to filter.</p>
+    </div>
+</div>
+
+<!-- Patient Detail Modal -->
+<div class="modal-overlay" id="patientDetailModal">
+    <div class="modal-box">
+        <button onclick="closeModal('patientDetailModal')" style="position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;font-size:1.3rem;color:#94a3b8;">✕</button>
+        <div class="flex items-center gap-3 mb-5">
+            <div class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center"><span class="material-symbols-outlined text-primary text-2xl">person</span></div>
+            <div><h2 class="text-lg font-bold text-slate-900">Fatima Begum</h2><p class="text-xs text-slate-500">ID: PT-0001 · Female, 45y</p></div>
+        </div>
+        <ul class="divide-y divide-slate-100 mb-4">
+            <li class="flex justify-between py-2.5 text-sm"><span class="font-bold text-slate-600">Condition</span><span class="text-slate-700 font-semibold">Hypertension</span></li>
+            <li class="flex justify-between py-2.5 text-sm"><span class="font-bold text-slate-600">Last Visit</span><span class="text-slate-700">April 26, 2026</span></li>
+            <li class="flex justify-between py-2.5 text-sm"><span class="font-bold text-slate-600">Blood Pressure</span><span class="text-slate-700">140/90 mmHg</span></li>
+            <li class="flex justify-between py-2.5 text-sm"><span class="font-bold text-slate-600">Assigned Doctor</span><span class="text-slate-700">Dr. Rahman</span></li>
+            <li class="flex justify-between py-2.5 text-sm"><span class="font-bold text-slate-600">Medications</span><span class="text-slate-700">Amlodipine 5mg</span></li>
+            <li class="flex justify-between py-2.5 text-sm"><span class="font-bold text-slate-600">Address</span><span class="text-slate-700">Dhamrai, Dhaka</span></li>
+            <li class="flex justify-between py-2.5 text-sm"><span class="font-bold text-slate-600">Phone</span><span class="text-slate-700">+880 1711-000001</span></li>
+        </ul>
+        <button class="w-full bg-primary text-white py-2.5 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-on-primary-fixed-variant transition-all">
+            <span class="material-symbols-outlined">open_in_new</span> View Full Profile
+        </button>
+    </div>
+</div>
+
+<!-- Monthly Visits Modal -->
+<div class="modal-overlay" id="monthlyVisitsModal">
+    <div class="modal-box wide">
+        <button onclick="closeModal('monthlyVisitsModal')" style="position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;font-size:1.3rem;color:#94a3b8;">✕</button>
+        <h2 class="text-xl font-bold text-slate-900 mb-5">Monthly Patient Visits</h2>
+        <div class="space-y-3">
+            <div class="p-4 bg-blue-50 rounded-xl border border-blue-100 flex justify-between items-center"><div><p class="font-bold text-slate-800">April 2026</p><p class="text-xs text-slate-500">Current month</p></div><div class="text-right"><p class="text-2xl font-extrabold text-primary">2,514</p><p class="text-xs text-green-600 font-bold">↑ +4.5%</p></div></div>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center"><div><p class="font-bold text-slate-800">March 2026</p></div><div class="text-right"><p class="text-2xl font-extrabold text-slate-700">2,406</p><p class="text-xs text-green-600 font-bold">↑ +2.1%</p></div></div>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center"><div><p class="font-bold text-slate-800">February 2026</p></div><div class="text-right"><p class="text-2xl font-extrabold text-slate-700">2,356</p><p class="text-xs text-red-500 font-bold">↓ -1.2%</p></div></div>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center"><div><p class="font-bold text-slate-800">January 2026</p></div><div class="text-right"><p class="text-2xl font-extrabold text-slate-700">2,384</p><p class="text-xs text-green-600 font-bold">↑ +5.8%</p></div></div>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center"><div><p class="font-bold text-slate-800">December 2025</p></div><div class="text-right"><p class="text-2xl font-extrabold text-slate-700">2,254</p><p class="text-xs text-slate-400 font-bold">—</p></div></div>
+            <div class="p-4 bg-slate-50 rounded-xl border border-slate-100 flex justify-between items-center"><div><p class="font-bold text-slate-800">November 2025</p></div><div class="text-right"><p class="text-2xl font-extrabold text-slate-700">2,180</p><p class="text-xs text-slate-400 font-bold">—</p></div></div>
+        </div>
+    </div>
+</div>
+
+<!-- Full Map Modal -->
+<div class="modal-overlay" id="fullMapModal">
+    <div class="modal-box wide">
+        <button onclick="closeModal('fullMapModal')" style="position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;font-size:1.3rem;color:#94a3b8;z-index:10">✕</button>
+        <h2 class="text-xl font-bold text-slate-900 mb-1">Geographic Patient Density Map</h2>
+        <p class="text-xs text-slate-500 mb-4">Rural area distribution around clinic location</p>
+        <div class="relative rounded-xl overflow-hidden border border-slate-200" style="height:400px">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuA8MJjE_mupVRtbRJZVob-Q4K8fsGZtk3PkWna4ldBOffMHJuAzBdE7aw9UIzXcPKBUgKQMPBTmL5goOVw7h3rjF0KJGzdfLjovOqXnBek94AsIT8sx1MCk9Qa1K3EQ5DGJd3cTq4k5ClKJpUK4B7ZsavtG3oEhhWDJBEtHHRC6VzBdcGoEjSBIdo8qzfGLO-rbIHdxw-F5trT3wBbUsVt6tnzfmOEoP9hxCOQ-MVf7msQM5qMAaoSmbeZIcEdTKP3cccaGFJm1WjnT" class="w-full h-full object-cover opacity-70" alt="Map"/>
+            <div style="position:absolute;top:45%;left:48%;transform:translate(-50%,-50%)">
+                <div style="background:#003c90;color:#fff;padding:6px 10px;border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;box-shadow:0 4px 12px rgba(0,60,144,0.3)">🏥 Healthcare BD Clinic</div>
+            </div>
+            <div style="position:absolute;top:30%;left:60%;transform:translate(-50%,-50%)">
+                <div style="background:rgba(0,106,106,0.9);color:#fff;padding:5px 9px;border-radius:6px;font-size:10px;font-weight:700;text-align:center"><div>Dhamrai</div><div style="opacity:0.85">1,248 pts · 38%</div></div>
+            </div>
+            <div style="position:absolute;top:55%;left:35%;transform:translate(-50%,-50%)">
+                <div style="background:rgba(15,82,186,0.9);color:#fff;padding:5px 9px;border-radius:6px;font-size:10px;font-weight:700;text-align:center"><div>Savar</div><div style="opacity:0.85">982 pts · 30%</div></div>
+            </div>
+            <div style="position:absolute;top:65%;left:62%;transform:translate(-50%,-50%)">
+                <div style="background:rgba(245,158,11,0.9);color:#fff;padding:5px 9px;border-radius:6px;font-size:10px;font-weight:700;text-align:center"><div>Hemayetpur</div><div style="opacity:0.85">671 pts · 20%</div></div>
+            </div>
+            <div style="position:absolute;top:38%;left:28%;transform:translate(-50%,-50%)">
+                <div style="background:rgba(107,114,128,0.85);color:#fff;padding:5px 9px;border-radius:6px;font-size:10px;font-weight:700;text-align:center"><div>Singair</div><div style="opacity:0.85">430 pts · 13%</div></div>
+            </div>
+        </div>
+        <div class="grid grid-cols-4 gap-3 mt-4">
+            <div class="text-center p-3 bg-teal-50 rounded-xl"><p class="font-bold text-secondary text-sm">Dhamrai</p><p class="text-lg font-extrabold text-slate-900">38%</p><p class="text-xs text-slate-400">1,248 pts</p></div>
+            <div class="text-center p-3 bg-blue-50 rounded-xl"><p class="font-bold text-primary text-sm">Savar</p><p class="text-lg font-extrabold text-slate-900">30%</p><p class="text-xs text-slate-400">982 pts</p></div>
+            <div class="text-center p-3 bg-amber-50 rounded-xl"><p class="font-bold text-amber-600 text-sm">Hemayetpur</p><p class="text-lg font-extrabold text-slate-900">20%</p><p class="text-xs text-slate-400">671 pts</p></div>
+            <div class="text-center p-3 bg-slate-50 rounded-xl"><p class="font-bold text-slate-600 text-sm">Singair</p><p class="text-lg font-extrabold text-slate-900">13%</p><p class="text-xs text-slate-400">430 pts</p></div>
+        </div>
+    </div>
+</div>
+
+<!-- Restock Request Modal -->
+<div class="modal-overlay" id="restockModal">
+    <div class="modal-box">
+        <button onclick="closeModal('restockModal')" style="position:absolute;top:14px;right:14px;background:none;border:none;cursor:pointer;font-size:1.3rem;color:#94a3b8;">✕</button>
+        <div class="flex items-center gap-3 mb-5">
+            <div class="p-2.5 bg-blue-50 rounded-xl"><span class="material-symbols-outlined text-primary text-2xl">shopping_cart</span></div>
+            <div><h2 class="text-xl font-bold text-slate-900">Restock Request</h2><p class="text-sm text-slate-500">Submit a new procurement request</p></div>
+        </div>
+        <div class="mb-4">
+            <label class="form-label-style">Item Name</label>
+            <select id="restockItem" class="form-input-style">
+                <option value="">Select item...</option>
+                <option>Ibuprofen 400mg</option>
+                <option>Epinephrine Vials</option>
+                <option>Surgical Gloves (M)</option>
+                <option>Vaccines (Multi)</option>
+                <option>Amoxicillin 500mg</option>
+                <option>IV Drip Sets</option>
+                <option>Bandages (Roll)</option>
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="form-label-style">Quantity Required</label>
+            <input type="number" id="restockQty" class="form-input-style" placeholder="Enter quantity..." min="1"/>
+        </div>
+        <div class="mb-4">
+            <label class="form-label-style">Priority Level</label>
+            <select id="restockPriority" class="form-input-style">
+                <option value="urgent">Urgent</option>
+                <option value="high">High</option>
+                <option value="normal">Normal</option>
+            </select>
+        </div>
+        <div class="mb-5">
+            <label class="form-label-style">Additional Notes</label>
+            <textarea id="restockNote" class="form-input-style" placeholder="Any additional information..."></textarea>
+        </div>
+        <button onclick="submitRestock()" class="w-full bg-primary text-white py-3 rounded-xl font-bold flex items-center justify-center gap-2 hover:bg-on-primary-fixed-variant transition-all">
+            <span class="material-symbols-outlined">send</span> Submit Request
+        </button>
+    </div>
+</div>
+
+<!-- Toast Container -->
+<div id="toast-container"></div>
+
+<!-- ====================== SCRIPT ====================== -->
+<script>
+    // ===== TAB NAVIGATION =====
+    function openTab(tabName) {
+        document.querySelectorAll('.tab-pane').forEach(el => el.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(el => {
+            el.classList.remove('bg-blue-50','text-blue-700','shadow-sm','border-l-4','border-blue-700','font-bold');
+            el.classList.add('text-slate-500');
+        });
+        document.getElementById(tabName).classList.add('active');
+        const nav = document.getElementById('nav-' + tabName);
+        if (nav) {
+            nav.classList.remove('text-slate-500');
+            nav.classList.add('bg-blue-50','text-blue-700','shadow-sm','border-l-4','border-blue-700','font-bold');
+        }
+        // Close any open dropdowns
+        document.getElementById('alertNotifPanel').classList.remove('open');
+        document.getElementById('profileDropdown').classList.remove('open');
+    }
+
+    // ===== MODALS =====
+    function openModal(id) { document.getElementById(id).classList.add('show'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('show'); }
+    window.addEventListener('click', e => {
+        if (e.target.classList.contains('modal-overlay')) e.target.classList.remove('show');
+    });
+
+    // ===== PROFILE MENU =====
+    function toggleProfileMenu() {
+        document.getElementById('profileDropdown').classList.toggle('open');
+        document.getElementById('alertNotifPanel').classList.remove('open');
+    }
+    function closeProfileMenu() {
+        document.getElementById('profileDropdown').classList.remove('open');
+    }
+    document.addEventListener('click', e => {
+        const profileContainer = document.getElementById('profileMenuContainer');
+        if (profileContainer && !profileContainer.contains(e.target)) {
+            document.getElementById('profileDropdown').classList.remove('open');
+        }
+        const notifContainer = document.getElementById('notifContainer');
+        if (notifContainer && !notifContainer.contains(e.target)) {
+            document.getElementById('alertNotifPanel').classList.remove('open');
+        }
+    });
+
+    // ===== NOTIFICATION PANEL =====
+    function toggleNotifPanel() {
+        document.getElementById('alertNotifPanel').classList.toggle('open');
+        document.getElementById('profileDropdown').classList.remove('open');
+    }
+    function clearAllAlerts() {
+        document.getElementById('notifList').innerHTML = '<div class="p-8 text-center text-slate-400"><span class="material-symbols-outlined text-4xl block mb-2">notifications_off</span><p class="text-sm font-semibold">No new notifications</p></div>';
+        document.getElementById('notifDot').style.display = 'none';
+        showToast('All notifications cleared', 'success');
+    }
+
+    // ===== LOGOUT =====
+function handleLogout() {
+    // 1. Close UI elements
+    closeModal('profileInfoModal');
+    document.getElementById('profileDropdown').classList.remove('open');
+    showToast('Logging out...', 'info');
+
+    // 2. Clear authentication data (Highly Recommended)
+    // This ensures the user is actually logged out of the system
+    localStorage.clear();
+    sessionStorage.clear();
+
+    // 3. Wait for the toast animation, then redirect
+    setTimeout(() => {
+        // Redirect to your actual login page URL
+        window.location.href = 'login.html'; 
+    }, 1200);
+}
+
+    // ===== TOAST =====
+    function showToast(msg, type = 'info') {
+        const c = document.getElementById('toast-container');
+        const t = document.createElement('div');
+        t.className = 'toast ' + (type === 'success' ? 'success' : type === 'error' ? 'error' : '');
+        const icon = type === 'success' ? 'check_circle' : type === 'error' ? 'cancel' : 'notifications';
+        t.innerHTML = `<span class="material-symbols-outlined text-[18px]">${icon}</span> ${msg}`;
+        c.appendChild(t);
+        setTimeout(() => t.remove(), 4000);
+    }
+
+    // ===== DATE FILTER =====
+    function applyDateFilter(val) {
+        const d = new Date(val);
+        const options = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
+        const formatted = d.toLocaleDateString('en-US', options);
+        document.getElementById('dashDateLabel').innerText = 'Institutional overview · ' + formatted;
+        showToast('Dashboard updated for ' + d.toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'}), 'success');
+    }
+
+    // ===== GLOBAL SEARCH =====
+    function handleSearch(val) {
+        if (val.length > 2) showToast(`Searching for "${val}"...`, 'info');
+    }
+
+    // ===== ANALYTICS VIEW =====
+    function setAnalyticsView(view, btn, date) {
+        const label = document.getElementById('analyticsViewLabel');
+        document.querySelectorAll('#patient-analytics .flex.items-center.bg-white button').forEach(b => {
+            b.classList.remove('bg-primary','text-white','shadow-md');
+            b.classList.add('bg-slate-50','text-slate-500');
+        });
+        if (btn) {
+            btn.classList.add('bg-primary','text-white','shadow-md');
+            btn.classList.remove('bg-slate-50','text-slate-500');
+        }
+        if (view === 'monthly') label.innerText = 'Showing: Monthly View (April 2026)';
+        else if (view === 'yearly') label.innerText = 'Showing: Yearly View (2026)';
+        else if (view === 'custom' && date) { const d = new Date(date); label.innerText = 'Showing: Custom Date — ' + d.toDateString(); }
+        showToast('Analytics view updated!', 'success');
+    }
+
+    // ===== EMERGENCY ALERT =====
+    function sendAlert() {
+        const type = document.getElementById('alertType').value;
+        const note = document.getElementById('alertNote').value.trim();
+        if (!type || !note) { showToast('Please select alert type and write a message.', 'error'); return; }
+        closeModal('emergencyAlertModal');
+        // Add to notification panel
+        const notifList = document.getElementById('notifList');
+        const newNotif = document.createElement('div');
+        newNotif.className = 'p-4 border-b border-slate-100 flex gap-3 items-start bg-red-50';
+        newNotif.innerHTML = `<span class="material-symbols-outlined text-red-500 text-[20px] mt-0.5">campaign</span><div><p class="text-sm font-bold text-slate-800">${type}</p><p class="text-xs text-slate-500 mt-0.5">${note}</p><p class="text-[10px] text-slate-400 mt-1">Just now</p></div>`;
+        notifList.prepend(newNotif);
+        document.getElementById('notifDot').style.display = 'block';
+        showToast('Emergency alert sent to all clinic members!', 'success');
+        document.getElementById('alertNote').value = '';
+        document.getElementById('alertType').value = '';
+    }
+
+    // ===== TRANSACTION FILTER =====
+    function filterTx(type) {
+        document.querySelectorAll('#txTableBody tr').forEach(row => {
+            row.style.display = (type === 'all' || row.classList.contains(type)) ? '' : 'none';
+        });
+        ['all','income','expense'].forEach(t => {
+            const btn = document.getElementById('txBtn-' + t);
+            if (btn) {
+                btn.classList.toggle('bg-primary', t === type);
+                btn.classList.toggle('text-white', t === type);
+                btn.classList.toggle('bg-slate-100', t !== type);
+                btn.classList.toggle('text-slate-600', t !== type);
+            }
+        });
+    }
+
+    // ===== PATIENT FILTER =====
+    function filterPatients(val) {
+        const q = val.toLowerCase();
+        document.querySelectorAll('.patient-row').forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
+        });
+    }
+
+    // ===== INVENTORY FILTER =====
+    function filterInventory(val) {
+        const q = val.toLowerCase();
+        document.querySelectorAll('.inv-row').forEach(row => {
+            row.style.display = row.innerText.toLowerCase().includes(q) ? '' : 'none';
+        });
+    }
+
+    // ===== RESTOCK SUBMIT =====
+    function submitRestock() {
+        const item = document.getElementById('restockItem').value;
+        const qty = document.getElementById('restockQty').value;
+        if (!item || !qty) { showToast('Please fill in all required fields.', 'error'); return; }
+        closeModal('restockModal');
+        showToast(`Restock request for ${item} (Qty: ${qty}) submitted!`, 'success');
+        document.getElementById('restockItem').value = '';
+        document.getElementById('restockQty').value = '';
+        document.getElementById('restockNote').value = '';
+    }
+
+    // ===== STAR RATINGS =====
+    function renderStars(containerId, count) {
+        const el = document.getElementById(containerId);
+        if (!el) return;
+        el.innerHTML = '';
+        for (let i = 1; i <= 5; i++) {
+            const s = document.createElement('span');
+            s.innerText = '★';
+            s.className = 'star' + (i <= count ? ' filled' : '');
+            el.appendChild(s);
+        }
+    }
+
+    // ===== PDF GENERATION =====
+    function generateReport() {
+        showToast('Generating dashboard report...', 'info');
+        setTimeout(() => {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.setFontSize(18); doc.setTextColor(0, 60, 144);
+                doc.text('Healthcare Monitoring System BD', 14, 20);
+                doc.setFontSize(12); doc.setTextColor(80, 80, 80);
+                doc.text('Management Dashboard Report', 14, 30);
+                doc.text('Date: ' + new Date().toLocaleDateString(), 14, 40);
+                doc.setDrawColor(200, 200, 200); doc.line(14, 45, 196, 45);
+                doc.setFontSize(14); doc.setTextColor(0, 60, 144); doc.text('Key Metrics', 14, 55);
+                doc.setFontSize(11); doc.setTextColor(40, 40, 40);
+                doc.text('Total Patients: 12,480', 14, 65);
+                doc.text('Monthly Visits: 2,514', 14, 75);
+                doc.text('Active Staff: 150 (Doctors: 40, Nurses: 80, Others: 30)', 14, 85);
+                doc.text('Monthly Revenue: BDT 4,85,000', 14, 95);
+                doc.setFontSize(14); doc.setTextColor(0, 60, 144); doc.text('Patient Satisfaction', 14, 115);
+                doc.setFontSize(11); doc.setTextColor(40, 40, 40);
+                doc.text('Satisfied: 82%  |  Neutral: 11%  |  Dissatisfied: 7%', 14, 125);
+                doc.setFontSize(14); doc.setTextColor(0, 60, 144); doc.text('Clinical Benchmarks', 14, 145);
+                doc.setFontSize(11); doc.setTextColor(40, 40, 40);
+                doc.text('Avg Wait Time: 15 minutes (GOOD)', 14, 155);
+                doc.text('Bed Occupancy: 85% (OPTIMAL)', 14, 165);
+                doc.setFontSize(14); doc.setTextColor(0, 60, 144); doc.text('Disease Distribution', 14, 185);
+                doc.setFontSize(11); doc.setTextColor(40, 40, 40);
+                doc.text('Hypertension: 35%  |  Diabetes: 25%  |  Respiratory: 20%  |  Gastro: 12%  |  Others: 8%', 14, 195);
+                doc.setFontSize(14); doc.setTextColor(0, 60, 144); doc.text('Critical Inventory Alerts', 14, 215);
+                doc.setFontSize(11); doc.setTextColor(40, 40, 40);
+                doc.text('Vaccines: 10% remaining (CRITICAL)', 14, 225);
+                doc.text('Ibuprofen 400mg: Out of Stock', 14, 235);
+                doc.text('Surgical Gloves (M): 5 boxes — Low Stock', 14, 245);
+                doc.setFontSize(8); doc.setTextColor(150, 150, 150);
+                doc.text('Generated by Healthcare Monitoring System BD — ' + new Date().toLocaleString(), 14, 280);
+                doc.save('Dashboard_Report_' + new Date().toISOString().slice(0,10) + '.pdf');
+                showToast('Report downloaded!', 'success');
+            } catch(e) { showToast('PDF generation unavailable in this environment.', 'error'); }
+        }, 800);
+    }
+
+    function exportFinancialPDF() {
+        showToast('Generating financial report...', 'info');
+        setTimeout(() => {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.setFontSize(18); doc.setTextColor(0, 60, 144);
+                doc.text('Healthcare Monitoring System BD', 14, 20);
+                doc.setFontSize(13); doc.setTextColor(80,80,80);
+                doc.text('Financial & Service Reports', 14, 30);
+                doc.text('Period: April 2026', 14, 40);
+                doc.setDrawColor(200,200,200); doc.line(14, 45, 196, 45);
+                doc.setFontSize(14); doc.setTextColor(0,60,144); doc.text('Financial Summary', 14, 55);
+                doc.setFontSize(11); doc.setTextColor(40,40,40);
+                doc.text('Total Revenue:      BDT 4,82,900', 14, 65);
+                doc.text('  - Service Fees:   BDT 3,12,400', 14, 73);
+                doc.text('  - Govt. Subsidy:  BDT 1,70,500', 14, 81);
+                doc.text('Operating Expenses: BDT 3,18,250', 14, 93);
+                doc.text('  - Salaries:       BDT 2,10,000', 14, 101);
+                doc.text('  - Medical Supplies:BDT 78,250', 14, 109);
+                doc.text('Net Balance:        BDT 1,64,650  (+8.4% growth)', 14, 121);
+                doc.setFontSize(14); doc.setTextColor(0,60,144); doc.text('Service Statistics', 14, 135);
+                doc.setFontSize(11); doc.setTextColor(40,40,40);
+                doc.text('General Consultation: 1,842 (+14.2%)', 14, 145);
+                doc.text('Maternal Health:       348 (+6.1%)', 14, 153);
+                doc.text('Child Health:          512 (-2.3%)', 14, 161);
+                doc.text('Emergency Cases:       87 (+3.7%)', 14, 169);
+                doc.setFontSize(14); doc.setTextColor(0,60,144); doc.text('Recent Transactions', 14, 183);
+                doc.setFontSize(11); doc.setTextColor(40,40,40);
+                doc.text('Apr 26 — INV-2026-112 — Subsidy:     +BDT 42,500', 14, 193);
+                doc.text('Apr 25 — PO-MD-4488  — Supplies:     -BDT 8,200', 14, 201);
+                doc.text('Apr 24 — INV-2026-110 — Service Fee: +BDT 28,750', 14, 209);
+                doc.text('Apr 23 — PO-SA-3301  — Salaries:     -BDT 1,75,000', 14, 217);
+                doc.text('Apr 22 — INV-2026-108 — Service Fee: +BDT 19,400', 14, 225);
+                doc.setFontSize(8); doc.setTextColor(150,150,150);
+                doc.text('Generated by Healthcare Monitoring System BD — ' + new Date().toLocaleString(), 14, 280);
+                doc.save('Financial_Report_April_2026.pdf');
+                showToast('Financial report downloaded!', 'success');
+            } catch(e) { showToast('PDF generation unavailable in this environment.', 'error'); }
+        }, 800);
+    }
+
+    function generateInventoryReport() {
+        showToast('Generating inventory report...', 'info');
+        setTimeout(() => {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.setFontSize(18); doc.setTextColor(0, 60, 144);
+                doc.text('Healthcare Monitoring System BD', 14, 20);
+                doc.setFontSize(13); doc.setTextColor(80,80,80);
+                doc.text('Medical Inventory & Procurement Report', 14, 30);
+                doc.text('Date: ' + new Date().toLocaleDateString(), 14, 40);
+                doc.setDrawColor(200,200,200); doc.line(14, 45, 196, 45);
+                doc.setFontSize(14); doc.setTextColor(0,60,144); doc.text('Stock Status', 14, 55);
+                doc.setFontSize(11); doc.setTextColor(40,40,40);
+                const items = [
+                    ['Medicine','Amoxicillin 500mg','1,240','Dec 2026','Normal'],
+                    ['Medicine','Ibuprofen 400mg','0','—','Out of Stock'],
+                    ['Equipment','Surgical Gloves (M)','5','N/A','Low Stock'],
+                    ['Equipment','IV Drip Sets','340','N/A','Normal'],
+                    ['Medicine','Epinephrine Vials','2','Mar 2027','Out of Stock'],
+                    ['Supplies','Bandages (Roll)','820','N/A','Normal'],
+                    ['Medicine','Vaccines','10%','Jun 2026','Critical'],
+                ];
+                let y = 65;
+                items.forEach(it => { doc.text(`${it[0]} | ${it[1]} | Qty: ${it[2]} | Exp: ${it[3]} | ${it[4]}`, 14, y); y += 10; });
+                doc.setFontSize(14); doc.setTextColor(0,60,144); doc.text('Critical Alerts', 14, y+8);
+                doc.setFontSize(11); doc.setTextColor(220,38,38);
+                doc.text('! Ibuprofen 400mg — Out of Stock', 14, y+18);
+                doc.text('! Epinephrine Vials — Only 2 left', 14, y+26);
+                doc.text('! Surgical Gloves (M) — 5 boxes only', 14, y+34);
+                doc.text('! Vaccines — 10% remaining (Critical)', 14, y+42);
+                doc.setTextColor(40,40,40);
+                doc.setFontSize(14); doc.setTextColor(0,60,144); doc.text('Pending Orders', 14, y+56);
+                doc.setFontSize(11); doc.setTextColor(40,40,40);
+                doc.text('Ibuprofen 400mg — Processing', 14, y+66);
+                doc.text('Epinephrine Vials — Ordered', 14, y+74);
+                doc.text('Surgical Gloves (M) — Pending', 14, y+82);
+                doc.text('Vaccines — Urgent', 14, y+90);
+                doc.setFontSize(14); doc.setTextColor(0,60,144); doc.text('Monthly Spend', 14, y+104);
+                doc.setFontSize(11); doc.setTextColor(40,40,40);
+                doc.text('April 2026 Procurement: BDT 78,250 (62% of monthly budget)', 14, y+114);
+                doc.setFontSize(8); doc.setTextColor(150,150,150);
+                doc.text('Generated by Healthcare Monitoring System BD — ' + new Date().toLocaleString(), 14, 280);
+                doc.save('Inventory_Report_' + new Date().toISOString().slice(0,10) + '.pdf');
+                showToast('Inventory report downloaded!', 'success');
+            } catch(e) { showToast('PDF generation unavailable in this environment.', 'error'); }
+        }, 800);
+    }
+
+    function exportPerformancePDF() {
+        showToast('Generating performance report...', 'info');
+        setTimeout(() => {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF();
+                doc.setFontSize(18); doc.setTextColor(0, 60, 144);
+                doc.text('Healthcare Monitoring System BD', 14, 20);
+                doc.setFontSize(13); doc.setTextColor(80,80,80);
+                doc.text('Performance Metrics Report', 14, 30);
+                doc.text('Date: ' + new Date().toLocaleDateString(), 14, 40);
+                doc.setDrawColor(200,200,200); doc.line(14, 45, 196, 45);
+                doc.setFontSize(14); doc.setTextColor(0,60,144); doc.text('CHW Outreach Metrics', 14, 55);
+                doc.setFontSize(11); doc.setTextColor(40,40,40);
+                doc.text('Home Visits: 1,284  (Target: 1,150/mo — 111% achieved)', 14, 65);
+                doc.text('Villages Covered: 42 / 45  (93% coverage)', 14, 75);
+                doc.setFontSize(14); doc.setTextColor(0,60,144); doc.text('Health Education Programs', 14, 93);
+                doc.setFontSize(11); doc.setTextColor(40,40,40);
+                doc.text('Programs Conducted: 28 (+4 vs last month)', 14, 103);
+                doc.text('Total Participants: 1,840 (+12%)', 14, 111);
+                doc.text('Monthly Target Achieved: 78%', 14, 119);
+                doc.text('Topics: Nutrition, Hygiene, Maternal Health, Child Care', 14, 127);
+                doc.setFontSize(14); doc.setTextColor(0,60,144); doc.text('Doctor Performance', 14, 145);
+                doc.setFontSize(11); doc.setTextColor(40,40,40);
+                const doctors = [
+                    ['Dr. Rahman','Cardiology','★★★★★ Excellent','98.2%'],
+                    ['Dr. Akter','Pediatrics','★★★★☆ Good','92.5%'],
+                    ['Dr. Patel','General Practice','★★★★☆ Good','84.0%'],
+                    ['Dr. Islam','Surgery','★★★☆☆ Average','76.4%']
+                ];
+                let y = 155;
+                doctors.forEach(d => { doc.text(`${d[0]} | ${d[1]} | ${d[2]} | Success Rate: ${d[3]}`, 14, y); y += 10; });
+                doc.setFontSize(8); doc.setTextColor(150,150,150);
+                doc.text('Generated by Healthcare Monitoring System BD — ' + new Date().toLocaleString(), 14, 280);
+                doc.save('Performance_Report_' + new Date().toISOString().slice(0,10) + '.pdf');
+                showToast('Performance report downloaded!', 'success');
+            } catch(e) { showToast('PDF generation unavailable in this environment.', 'error'); }
+        }, 800);
+    }
+
+    // ===== FINANCIAL DATA UPDATE =====
+    function updateFinancialData() {
+        const month = document.getElementById('financialMonthSelect').value;
+        const data = {
+            apr: { rev: '৳ 4,82,900', exp: '৳ 3,18,250', bal: '৳ 1,64,650' },
+            feb: { rev: '৳ 3,96,400', exp: '৳ 2,84,100', bal: '৳ 1,12,300' },
+            jan: { rev: '৳ 4,12,600', exp: '৳ 2,95,800', bal: '৳ 1,16,800' },
+        };
+        const d = data[month];
+        document.getElementById('fin-revenue').innerText = d.rev;
+        document.getElementById('fin-expenses').innerText = d.exp;
+        document.getElementById('fin-balance').innerText = d.bal;
+        showToast('Financial data updated!', 'success');
+    }
+
+    // ===== INIT =====
+    document.addEventListener('DOMContentLoaded', () => {
+        renderStars('stars-rahman', 5);
+        renderStars('stars-akter', 4);
+        renderStars('stars-patel', 4);
+        renderStars('stars-islam', 3);
+    });
+</script>
+</body>
+</html>

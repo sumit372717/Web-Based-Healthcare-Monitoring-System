@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Book Appointment | RuralCare BD</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary: #008080;
+            --primary-dark: #004c4c;
+            --secondary: #20b2aa;
+            --bg: #f0f9f4;
+            --card-bg: #ffffff;
+            --text: #333;
+            --text-light: #666;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #73dc76, #6ce07f);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .header {
+            background: white;
+            padding: 15px 30px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 700;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .welcome {
+            font-weight: 600;
+            color: var(--primary-dark);
+        }
+
+        .sidebar {
+            width: 260px;
+            background: var(--primary-dark);
+            color: white;
+            height: calc(100vh - 70px);
+            position: fixed;
+            padding: 25px 0;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .nav-item {
+            padding: 16px 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            background: var(--primary);
+            border-left: 4px solid #fff;
+            padding-left: 30px;
+        }
+
+        .main-content {
+            margin-left: 260px;
+            padding: 30px;
+            min-height: calc(100vh - 70px);
+        }
+
+        .card {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            padding: 35px;
+            max-width: 850px;
+            margin: 0 auto 30px auto; /* Added bottom margin */
+        }
+
+        .card h2 {
+            color: var(--primary);
+            margin-bottom: 25px;
+            font-size: 26px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 18px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(0, 128, 128, 0.1);
+            outline: none;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        .file-upload {
+            border: 2px dashed var(--primary);
+            padding: 25px;
+            text-align: center;
+            border-radius: 10px;
+            background: #f8fffd;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        .file-upload:hover {
+            background: #f0fff9;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            padding: 14px 30px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 15px;
+            transition: 0.3s;
+        }
+
+        .btn:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 13px;
+            width: auto;
+            margin-top: 0;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+        }
+        .btn-danger:hover {
+            background: #b02a37;
+        }
+
+        .success-popup {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: #10b981;
+            color: white;
+            padding: 16px 25px;
+            border-radius: 12px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.15);
+            display: none;
+            align-items: center;
+            gap: 10px;
+            z-index: 1000;
+            font-weight: 500;
+        }
+
+        /* --- New Table Styles for Records & History --- */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+            text-align: left;
+        }
+
+        th, td {
+            padding: 15px;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        th {
+            background-color: var(--bg);
+            color: var(--primary-dark);
+            font-weight: 600;
+        }
+
+        tr:hover {
+            background-color: #f9fdfa;
+        }
+
+        tr:last-child td {
+            border-bottom: none;
+        }
+
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+
+        .status-upcoming {
+            background: #e0f2fe;
+            color: #0369a1;
+        }
+
+        .status-completed {
+            background: #dcfce7;
+            color: #15803d;
+        }
+
+        .status-cancelled {
+            background: #fee2e2;
+            color: #b91c1c;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 20px;
+            color: var(--text-light);
+            font-style: italic;
+        }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 220px; }
+            .main-content { margin-left: 220px; padding: 20px; }
+            .form-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="logo">
+            <i class="fa-solid fa-house-medical-flag"></i>
+            RuralCare BD
+        </div>
+        
+        <div class="user-info">
+            <div class="welcome" id="welcomeText">Welcome, Patient</div>
+            <select id="languageSelect" onchange="changeLanguage()" style="padding: 8px 12px; border-radius: 6px; border: 1px solid #ccc;">
+                <option value="en">English</option>
+                <option value="bn">বাংলা</option>
+            </select>
+            <button onclick="handleLogout()" class="btn btn-danger" style="padding: 10px 20px; width: auto; margin-top: 0;">
+                <i class="fa-solid fa-power-off"></i> <span data-i18n="logout">Logout</span>
+            </button>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <a href="book-appointment.html" class="nav-item active">
+            <i class="fa-solid fa-calendar-check"></i>
+            <span data-i18n="navBook">Book Appointment</span>
+        </a>
+        <a href="medical-records.html" class="nav-item">
+            <i class="fa-solid fa-file-medical"></i>
+            <span data-i18n="navMed">Medical Records</span>
+        </a>
+        <a href="e-prescriptions.html" class="nav-item">
+            <i class="fa-solid fa-pills"></i>
+            <span data-i18n="navPresc">E-Prescriptions</span>
+        </a>
+    </div>
+
+    <div class="main-content">
+        <div class="card">
+            <h2><i class="fa-solid fa-notes-medical"></i> <span data-i18n="titleBook">Book a New Appointment</span></h2>
+            
+            <form id="appointmentForm" onsubmit="confirmAppointment(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label data-i18n="labelName">Full Name</label>
+                        <input type="text" id="patientName" placeholder="Enter your full name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="labelDoctor">Select Doctor</label>
+                        <select id="doctorSelect" required>
+                            <option value="" id="optChooseDr">-- Choose Doctor --</option>
+                            <option value="Dr. Rahman (General Medicine)" id="optDr1">Dr. Rahman (General Medicine)</option>
+                            <option value="Dr. Sultana (Gynecology)" id="optDr2">Dr. Sultana (Gynecology)</option>
+                            <option value="Dr. Karim (Cardiology)" id="optDr3">Dr. Karim (Cardiology)</option>
+                            <option value="Dr. Hossain (Pediatrics)" id="optDr4">Dr. Hossain (Pediatrics)</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="labelDate">Appointment Date</label>
+                        <input type="date" id="apptDate" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label data-i18n="labelTime">Preferred Time</label>
+                        <select id="apptTime" required>
+                            <option value="" id="optChooseTime">-- Select Time --</option>
+                            <option value="09:00 AM">09:00 AM</option>
+                            <option value="10:00 AM">10:00 AM</option>
+                            <option value="11:30 AM">11:30 AM</option>
+                            <option value="02:00 PM">02:00 PM</option>
+                            <option value="03:30 PM">03:30 PM</option>
+                            <option value="05:00 PM">05:00 PM</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label data-i18n="labelUpload">Upload Prescription / Medical Image (Optional)</label>
+                        <div class="file-upload" onclick="document.getElementById('fileInput').click()">
+                            <i class="fa-solid fa-cloud-arrow-up" style="font-size: 28px; color: var(--primary); margin-bottom: 8px;"></i>
+                            <p style="color: #555;" data-i18n="uploadHelp">Click to upload image or drag & drop</p>
+                            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label data-i18n="labelSymptoms">Symptoms / Reason for Visit</label>
+                        <textarea id="symptoms" rows="5" placeholder="Describe your symptoms or reason for appointment..." required></textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn">
+                    <i class="fa-solid fa-calendar-plus"></i> <span data-i18n="btnConfirm">Confirm Appointment</span>
+                </button>
+            </form>
+        </div>
+
+        <div class="card">
+            <h2><i class="fa-solid fa-clock"></i> <span data-i18n="titleUpcoming">Upcoming Appointments</span></h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th data-i18n="thDoctor">Doctor</th>
+                            <th data-i18n="thDate">Date</th>
+                            <th data-i18n="thTime">Time</th>
+                            <th data-i18n="thStatus">Status</th>
+                            <th data-i18n="thAction">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="upcomingAppointmentsBody">
+                        <tr id="emptyUpcomingRow">
+                            <td colspan="5" class="empty-state" data-i18n="emptyUpcoming">No upcoming appointments found.</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2><i class="fa-solid fa-clock-rotate-left"></i> <span data-i18n="titleHistory">Appointment History</span></h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th data-i18n="thDoctor">Doctor</th>
+                            <th data-i18n="thDate">Date</th>
+                            <th data-i18n="thTime">Time</th>
+                            <th data-i18n="thStatus">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Dr. Sultana (Gynecology)</td>
+                            <td>2024-03-15</td>
+                            <td>10:00 AM</td>
+                            <td><span class="status-badge status-completed" data-i18n="statusCompleted">Completed</span></td>
+                        </tr>
+                        <tr>
+                            <td>Dr. Rahman (General Medicine)</td>
+                            <td>2024-02-28</td>
+                            <td>02:00 PM</td>
+                            <td><span class="status-badge status-cancelled" data-i18n="statusCancelled">Cancelled</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <div class="success-popup" id="successPopup">
+        <i class="fa-solid fa-circle-check"></i>
+        <span id="successMessage">Appointment booked successfully!</span>
+    </div>
+
+    <script>
+        // --- TRANSLATION DICTIONARY ---
+        const translations = {
+            en: {
+                navBook: "Book Appointment",
+                navMed: "Medical Records",
+                navPresc: "E-Prescriptions",
+                logout: "Logout",
+                titleBook: "Book a New Appointment",
+                labelName: "Full Name",
+                labelDoctor: "Select Doctor",
+                labelDate: "Appointment Date",
+                labelTime: "Preferred Time",
+                labelUpload: "Upload Prescription / Medical Image (Optional)",
+                uploadHelp: "Click to upload image or drag & drop",
+                labelSymptoms: "Symptoms / Reason for Visit",
+                btnConfirm: "Confirm Appointment",
+                optChooseDr: "-- Choose Doctor --",
+                optDr1: "Dr. Rahman (General Medicine)",
+                optDr2: "Dr. Sultana (Gynecology)",
+                optDr3: "Dr. Karim (Cardiology)",
+                optDr4: "Dr. Hossain (Pediatrics)",
+                optChooseTime: "-- Select Time --",
+                phName: "Enter your full name",
+                phSymptoms: "Describe your symptoms or reason for appointment...",
+                welcomePrefix: "Welcome",
+                successMsg: "Appointment booked successfully!",
+                // New Translations for Records & History
+                titleUpcoming: "Upcoming Appointments",
+                titleHistory: "Appointment History",
+                thDoctor: "Doctor",
+                thDate: "Date",
+                thTime: "Time",
+                thStatus: "Status",
+                thAction: "Action",
+                statusUpcoming: "Upcoming",
+                statusCompleted: "Completed",
+                statusCancelled: "Cancelled",
+                btnCancel: "Cancel Appt",
+                emptyUpcoming: "No upcoming appointments found."
+            },
+            bn: {
+                navBook: "অ্যাপয়েন্টমেন্ট বুক করুন",
+                navMed: "মেডিকেল রেকর্ড",
+                navPresc: "ই-প্রেসক্রিপশন",
+                logout: "লগআউট",
+                titleBook: "নতুন অ্যাপয়েন্টমেন্ট বুক করুন",
+                labelName: "পুরো নাম",
+                labelDoctor: "ডাক্তার নির্বাচন করুন",
+                labelDate: "অ্যাপয়েন্টমেন্টের তারিখ",
+                labelTime: "পছন্দের সময়",
+                labelUpload: "প্রেসক্রিপশন / ছবি আপলোড করুন (ঐচ্ছিক)",
+                uploadHelp: "আপলোড করতে ক্লিক করুন বা টেনে আনুন",
+                labelSymptoms: "লক্ষণ / সাক্ষাতের কারণ",
+                btnConfirm: "অ্যাপয়েন্টমেন্ট নিশ্চিত করুন",
+                optChooseDr: "-- ডাক্তার নির্বাচন করুন --",
+                optDr1: "ডাঃ রহমান (জেনারেল মেডিসিন)",
+                optDr2: "ডাঃ সুলতানা (গাইনোকোলজি)",
+                optDr3: "ডাঃ করিম (কার্ডিওলজি)",
+                optDr4: "ডাঃ হোসেন (পেডিয়াট্রিক্স)",
+                optChooseTime: "-- সময় নির্বাচন করুন --",
+                phName: "আপনার পুরো নাম লিখুন",
+                phSymptoms: "আপনার লক্ষণ বা কারণ বর্ণনা করুন...",
+                welcomePrefix: "স্বাগতম",
+                successMsg: "অ্যাপয়েন্টমেন্ট সফলভাবে বুক করা হয়েছে!",
+                // New Translations for Records & History
+                titleUpcoming: "আসন্ন অ্যাপয়েন্টমেন্ট",
+                titleHistory: "অ্যাপয়েন্টমেন্টের ইতিহাস",
+                thDoctor: "ডাক্তার",
+                thDate: "তারিখ",
+                thTime: "সময়",
+                thStatus: "স্ট্যাটাস",
+                thAction: "অ্যাকশন",
+                statusUpcoming: "আসন্ন",
+                statusCompleted: "সম্পন্ন",
+                statusCancelled: "বাতিল",
+                btnCancel: "বাতিল করুন",
+                emptyUpcoming: "কোনো আসন্ন অ্যাপয়েন্টমেন্ট পাওয়া যায়নি।"
+            }
+        };
+
+        // --- LANGUAGE SWITCHER FUNCTION ---
+        function changeLanguage() {
+            const lang = document.getElementById('languageSelect').value;
+            const t = translations[lang];
+
+            // Update standard text elements
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                if (t[key]) {
+                    el.innerText = t[key];
+                }
+            });
+
+            // Update placeholders
+            document.getElementById('patientName').placeholder = t.phName;
+            document.getElementById('symptoms').placeholder = t.phSymptoms;
+
+            // Update dropdown options
+            document.getElementById('optChooseDr').innerText = t.optChooseDr;
+            document.getElementById('optDr1').innerText = t.optDr1;
+            document.getElementById('optDr2').innerText = t.optDr2;
+            document.getElementById('optDr3').innerText = t.optDr3;
+            document.getElementById('optDr4').innerText = t.optDr4;
+            document.getElementById('optChooseTime').innerText = t.optChooseTime;
+
+            // Update dynamic welcome text
+            updateWelcomeText(lang);
+        }
+
+        // Set user name from localStorage
+        function loadUserInfo() {
+            const currentLang = document.getElementById('languageSelect').value;
+            updateWelcomeText(currentLang);
+        }
+
+        function updateWelcomeText(lang) {
+            const userName = localStorage.getItem('ruralUserName') || (lang === 'en' ? "Patient" : "রোগী");
+            const prefix = translations[lang].welcomePrefix;
+            document.getElementById('welcomeText').textContent = `${prefix}, ${userName}`;
+        }
+
+        // Logout function
+        function handleLogout() {
+            const lang = document.getElementById('languageSelect').value;
+            const msg = lang === 'en' ? "Are you sure you want to logout?" : "আপনি কি নিশ্চিত যে আপনি লগআউট করতে চান?";
+            
+            if (confirm(msg)) {
+                localStorage.removeItem('ruralUserRole');
+                localStorage.removeItem('ruralUserName');
+                window.location.href = "/Sumit/Index.html";
+            }
+        }
+
+        // Show success message
+        function showSuccess() {
+            const lang = document.getElementById('languageSelect').value;
+            const popup = document.getElementById('successPopup');
+            document.getElementById('successMessage').textContent = translations[lang].successMsg;
+            
+            popup.style.display = 'flex';
+            
+            setTimeout(() => {
+                popup.style.display = 'none';
+            }, 4000);
+        }
+
+        // --- Handle form submission & UI Update ---
+        function confirmAppointment(event) {
+            event.preventDefault();
+
+            const doctorDropdown = document.getElementById('doctorSelect');
+            const doctorText = doctorDropdown.options[doctorDropdown.selectedIndex].text; // Get display text
+            const date = document.getElementById('apptDate').value;
+            const time = document.getElementById('apptTime').value;
+            const lang = document.getElementById('languageSelect').value;
+
+            if (!doctorDropdown.value || !date || !time) {
+                const alertMsg = lang === 'en' ? "Please fill all required fields!" : "অনুগ্রহ করে সব প্রয়োজনীয় ঘর পূরণ করুন!";
+                alert(alertMsg);
+                return;
+            }
+
+            // Hide empty state if it exists
+            const emptyRow = document.getElementById('emptyUpcomingRow');
+            if(emptyRow) emptyRow.style.display = 'none';
+
+            // Add to Upcoming Appointments Table dynamically
+            const tbody = document.getElementById('upcomingAppointmentsBody');
+            const newRow = document.createElement('tr');
+            
+            const upcomingText = translations[lang].statusUpcoming;
+            const cancelText = translations[lang].btnCancel;
+
+            newRow.innerHTML = `
+                <td>${doctorText}</td>
+                <td>${date}</td>
+                <td>${time}</td>
+                <td><span class="status-badge status-upcoming" data-i18n="statusUpcoming">${upcomingText}</span></td>
+                <td>
+                    <button class="btn btn-danger btn-small" onclick="cancelAppointment(this)" data-i18n="btnCancel">${cancelText}</button>
+                </td>
+            `;
+            tbody.appendChild(newRow);
+
+            // Simulate booking confirmation
+            setTimeout(() => {
+                showSuccess();
+                document.getElementById('appointmentForm').reset();
+            }, 300);
+        }
+
+        // Function to remove an appointment from the table
+        function cancelAppointment(btnElement) {
+            const lang = document.getElementById('languageSelect').value;
+            const confirmMsg = lang === 'en' ? "Cancel this appointment?" : "এই অ্যাপয়েন্টমেন্ট বাতিল করবেন?";
+            
+            if(confirm(confirmMsg)) {
+                const row = btnElement.closest('tr');
+                row.remove();
+                
+                // Show empty state again if no rows are left
+                const tbody = document.getElementById('upcomingAppointmentsBody');
+                if (tbody.querySelectorAll('tr').length === 1 && document.getElementById('emptyUpcomingRow')) {
+                   document.getElementById('emptyUpcomingRow').style.display = 'table-row';
+                }
+            }
+        }
+
+        // Auto-set minimum date to today
+        function setMinDate() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('apptDate').setAttribute('min', today);
+        }
+
+        // Initialize page
+        window.onload = function() {
+            loadUserInfo();
+            setMinDate();
+            // Call changeLanguage once on load to ensure defaults are set correctly based on initial dropdown state
+            changeLanguage(); 
+        };
+    </script>
+</body>
+</html>
