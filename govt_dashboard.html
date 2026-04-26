@@ -1,0 +1,1079 @@
+<!DOCTYPE html>
+<html class="light" lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HealthMetrics Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+  tailwind.config = {
+    darkMode: "class",
+    theme: {
+      extend: {
+        "colors": {
+          "surface-container": "#e5eeff",
+          "on-surface": "#0b1c30",
+          "on-tertiary-fixed-variant": "#653e00",
+          "surface-variant": "#d3e4fe",
+          "error-container": "#ffdad6",
+          "on-background": "#0b1c30",
+          "secondary-fixed": "#d8e3fb",
+          "surface-container-highest": "#d3e4fe",
+          "on-tertiary": "#ffffff",
+          "on-tertiary-fixed": "#2a1700",
+          "on-secondary": "#ffffff",
+          "primary-fixed": "#6ffbbe",
+          "surface": "#f8f9ff",
+          "surface-container-low": "#eff4ff",
+          "inverse-on-surface": "#eaf1ff",
+          "on-secondary-fixed-variant": "#3c475a",
+          "secondary-fixed-dim": "#bcc7de",
+          "tertiary": "#855300",
+          "on-primary-fixed": "#002113",
+          "surface-dim": "#cbdbf5",
+          "tertiary-container": "#e29100",
+          "surface-container-lowest": "#ffffff",
+          "on-primary-container": "#00422b",
+          "on-primary-fixed-variant": "#005236",
+          "inverse-primary": "#4edea3",
+          "secondary": "#545f73",
+          "surface-container-high": "#dce9ff",
+          "secondary-container": "#d5e0f8",
+          "on-error": "#ffffff",
+          "inverse-surface": "#213145",
+          "surface-tint": "#006c49",
+          "outline-variant": "#bbcabf",
+          "error": "#ba1a1a",
+          "background": "#f8f9ff",
+          "outline": "#6c7a71",
+          "surface-bright": "#f8f9ff",
+          "on-primary": "#ffffff",
+          "tertiary-fixed-dim": "#ffb95f",
+          "primary-fixed-dim": "#4edea3",
+          "on-secondary-fixed": "#111c2d",
+          "on-tertiary-container": "#523200",
+          "tertiary-fixed": "#ffddb8",
+          "on-secondary-container": "#586377",
+          "on-surface-variant": "#3c4a42",
+          "primary": "#006c49",
+          "on-error-container": "#93000a",
+          "primary-container": "#10b981"
+        },
+        "borderRadius": {
+          "DEFAULT": "0.125rem",
+          "lg": "0.25rem",
+          "xl": "0.5rem",
+          "full": "0.75rem"
+        },
+        "spacing": {
+          "gutter": "24px",
+          "margin": "40px",
+          "xl": "32px",
+          "sm": "12px",
+          "lg": "24px",
+          "md": "16px",
+          "base": "4px",
+          "xs": "8px"
+        },
+        "fontFamily": {
+          "h2": ["Inter"],
+          "stats-lg": ["Inter"],
+          "label-caps": ["Inter"],
+          "h1": ["Inter"],
+          "h3": ["Inter"],
+          "body-sm": ["Inter"],
+          "body-md": ["Inter"],
+          "body-lg": ["Inter"]
+        },
+        "fontSize": {
+          "h2": ["24px", {"lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "600"}],
+          "stats-lg": ["40px", {"lineHeight": "48px", "letterSpacing": "-0.03em", "fontWeight": "700"}],
+          "label-caps": ["12px", {"lineHeight": "16px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+          "h1": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+          "h3": ["20px", {"lineHeight": "28px", "fontWeight": "600"}],
+          "body-sm": ["14px", {"lineHeight": "20px", "fontWeight": "400"}],
+          "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+          "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}]
+        }
+      },
+    },
+  }
+</script>
+<style>
+  .material-symbols-outlined {
+    font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+  }
+  body { font-family: 'Inter', sans-serif; }
+  .page-section { display: none; }
+  .page-section.active { display: block; }
+  .nav-link { transition: all 0.15s ease; }
+  .nav-link.active {
+    background-color: #ecfdf5;
+    color: #047857;
+    font-weight: 600;
+    border-right: 4px solid #059669;
+  }
+  @media print {
+    aside, header { display: none !important; }
+    main { margin-left: 0 !important; }
+    .no-print { display: none !important; }
+    .page-section { display: none !important; }
+    .page-section.active { display: block !important; }
+  }
+</style>
+</head>
+<body class="bg-background text-on-background antialiased flex">
+
+<!-- SideNavBar -->
+<aside class="flex flex-col fixed left-0 top-0 h-full z-40 bg-slate-50 border-r border-slate-200 w-64 transition-all ease-in-out duration-200">
+  <div class="px-6 py-8">
+    <h1 class="text-lg font-black text-slate-900 tracking-tight">HealthMetrics</h1>
+    <p class="text-xs text-slate-500 font-medium uppercase tracking-widest mt-1">Global Operations Center</p>
+  </div>
+  <nav class="flex-1 px-3 space-y-1">
+    <a class="nav-link active flex items-center px-3 py-2.5 transition-all duration-100 cursor-pointer" onclick="showPage('national')">
+      <span class="material-symbols-outlined mr-3 text-[20px]">dashboard</span>
+      <span class="font-inter text-sm antialiased">National Overview</span>
+    </a>
+    <a class="nav-link flex items-center px-3 py-2.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all duration-100 cursor-pointer" onclick="showPage('divisional')">
+      <span class="material-symbols-outlined mr-3 text-[20px]">analytics</span>
+      <span class="font-inter text-sm antialiased">Divisional Performance</span>
+    </a>
+    <a class="nav-link flex items-center px-3 py-2.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all duration-100 cursor-pointer" onclick="showPage('sdg')">
+      <span class="material-symbols-outlined mr-3 text-[20px]">verified</span>
+      <span class="font-inter text-sm antialiased">SDG &amp; Goals</span>
+    </a>
+    <a class="nav-link flex items-center px-3 py-2.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all duration-100 cursor-pointer" onclick="showPage('policy')">
+      <span class="material-symbols-outlined mr-3 text-[20px]">policy</span>
+      <span class="font-inter text-sm antialiased">Policy Initiatives</span>
+    </a>
+    <a class="nav-link flex items-center px-3 py-2.5 text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-all duration-100 cursor-pointer" onclick="showPage('benchmarks')">
+      <span class="material-symbols-outlined mr-3 text-[20px]">public</span>
+      <span class="font-inter text-sm antialiased">Benchmarks</span>
+    </a>
+  </nav>
+  <div class="p-4 border-t border-slate-200 space-y-1">
+    <a class="flex items-center px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-sm font-medium cursor-pointer">
+      <span class="material-symbols-outlined mr-3">help</span>Support
+    </a>
+    <a class="flex items-center px-3 py-2 text-slate-600 hover:text-slate-900 hover:bg-slate-100 text-sm font-medium cursor-pointer">
+      <span class="material-symbols-outlined mr-3">settings</span>Settings
+    </a>
+    <div class="mt-4 pt-4 border-t border-slate-200 flex items-center px-3">
+      <div class="h-8 w-8 rounded-full bg-emerald-100 flex items-center justify-center text-emerald-700 font-bold text-xs">AU</div>
+      <div class="ml-3 overflow-hidden">
+        <p class="text-xs font-bold text-slate-900 truncate">Admin User</p>
+        <p class="text-[10px] text-slate-500 truncate">System Administrator</p>
+      </div>
+    </div>
+  </div>
+</aside>
+
+<!-- Main Content -->
+<main class="ml-64 flex-1 flex flex-col min-h-screen">
+
+  <!-- TopAppBar -->
+  <header class="bg-white sticky top-0 z-30 shadow-sm border-b border-slate-200 flex justify-between items-center w-full px-6 py-2 h-16 no-print">
+    <div class="flex items-center gap-4">
+      <div class="relative">
+        <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+        <input class="bg-slate-50 border-none rounded-lg text-sm pl-10 pr-4 py-2 w-64 focus:ring-2 focus:ring-emerald-500" placeholder="Search data..." type="text"/>
+      </div>
+    </div>
+    <div class="flex items-center space-x-2">
+      <button onclick="exportPDF()" class="bg-emerald-600 text-white font-inter text-sm font-medium tracking-tight px-4 py-2 rounded transition-colors hover:bg-emerald-700 active:scale-95 duration-100 flex items-center gap-2">
+        <span class="material-symbols-outlined text-sm">picture_as_pdf</span>
+        Export PDF
+      </button>
+      <button onclick="downloadAuditPDF()" id="audit-btn" class="bg-slate-700 text-white font-inter text-sm font-medium tracking-tight px-4 py-2 rounded transition-colors hover:bg-slate-800 active:scale-95 duration-100 hidden items-center gap-2">
+        <span class="material-symbols-outlined text-sm">download</span>
+        Download Audit PDF
+      </button>
+      <div class="h-8 w-[1px] bg-slate-200 mx-2"></div>
+      <button class="p-2 rounded text-slate-500 hover:bg-slate-50 transition-colors">
+        <span class="material-symbols-outlined">dark_mode</span>
+      </button>
+      <button onclick="doLogout()" class="p-2 rounded text-slate-500 hover:bg-slate-50 transition-colors" title="Logout">
+        <span class="material-symbols-outlined">logout</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===================== PAGE: NATIONAL OVERVIEW ===================== -->
+  <div id="page-national" class="page-section active p-lg md:p-xl flex-1 space-y-xl max-w-[1600px]">
+    <div class="flex justify-between items-end">
+      <div>
+        <h2 class="font-h1 text-h1 text-on-surface">National Overview</h2>
+        <p class="font-body-md text-body-md text-secondary mt-1">Key performance indicators and strategic growth metrics across all divisions.</p>
+      </div>
+      <div class="flex items-center gap-xs">
+        <!-- Monthly/Annual Toggle -->
+        <div class="flex items-center bg-slate-100 rounded-lg p-1 gap-1">
+          <button onclick="setChartMode('monthly', 'national')" id="national-monthly-btn" class="chart-toggle-btn px-3 py-1.5 rounded-md text-sm font-semibold bg-white text-emerald-700 shadow-sm transition-all">monthly</button>
+          <button onclick="setChartMode('annual', 'national')" id="national-annual-btn" class="chart-toggle-btn px-3 py-1.5 rounded-md text-sm font-semibold text-slate-500 transition-all">annual</button>
+        </div>
+        <span class="bg-primary/10 text-primary px-3 py-1 rounded-full text-label-caps uppercase flex items-center gap-1 ml-2">
+          <span class="h-2 w-2 rounded-full bg-primary animate-pulse"></span>Live Update
+        </span>
+      </div>
+    </div>
+
+    <!-- Main Charts Grid -->
+    <div class="grid grid-cols-12 gap-lg h-auto lg:h-[420px]">
+      <!-- Main Area Chart -->
+      <div class="col-span-12 lg:col-span-8 bg-white rounded-xl shadow-[0_4px_12px_rgba(11,28,48,0.05)] border border-slate-100 p-lg flex flex-col">
+        <div class="flex justify-between items-start mb-lg">
+          <div>
+            <h3 class="font-h3 text-h3 text-on-surface" id="national-chart-title">National Healthcare Growth Trends (monthly - 2025)</h3>
+            <p class="font-body-sm text-body-sm text-secondary">Historical analysis of primary ecosystem performance.</p>
+          </div>
+          <div class="flex gap-md">
+            <div class="flex items-center gap-xs">
+              <span class="h-3 w-3 rounded-full bg-emerald-500"></span>
+              <span class="text-[12px] font-semibold text-slate-600 uppercase tracking-tight">Budget</span>
+            </div>
+            <div class="flex items-center gap-xs">
+              <span class="h-3 w-3 rounded-full bg-blue-500"></span>
+              <span class="text-[12px] font-semibold text-slate-600 uppercase tracking-tight">Patients</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex-1 relative min-h-[250px]">
+          <!-- Monthly Chart -->
+          <svg id="national-chart-monthly" class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 800 250">
+            <defs>
+              <linearGradient id="grad-green-m" x1="0%" x2="0%" y1="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.2"></stop>
+                <stop offset="100%" style="stop-color:#10b981;stop-opacity:0"></stop>
+              </linearGradient>
+            </defs>
+            <line stroke="#f1f5f9" stroke-width="1" x1="0" x2="800" y1="50" y2="50"></line>
+            <line stroke="#f1f5f9" stroke-width="1" x1="0" x2="800" y1="100" y2="100"></line>
+            <line stroke="#f1f5f9" stroke-width="1" x1="0" x2="800" y1="150" y2="150"></line>
+            <line stroke="#f1f5f9" stroke-width="1" x1="0" x2="800" y1="200" y2="200"></line>
+            <path d="M0,210 C60,195 130,215 200,185 C260,175 330,160 400,145 C470,130 540,120 600,110 C670,98 740,88 800,80 L800,250 L0,250 Z" fill="url(#grad-green-m)"></path>
+            <path d="M0,210 C60,195 130,215 200,185 C260,175 330,160 400,145 C470,130 540,120 600,110 C670,98 740,88 800,80" fill="none" stroke="#10b981" stroke-width="3"></path>
+            <path d="M0,235 C60,225 130,220 200,210 C260,200 330,195 400,185 C470,172 540,168 600,155 C670,140 740,130 800,122" fill="none" stroke="#3b82f6" stroke-dasharray="8,4" stroke-width="3"></path>
+          </svg>
+          <!-- Annual Chart -->
+          <svg id="national-chart-annual" class="w-full h-full" preserveAspectRatio="none" viewBox="0 0 800 250" style="display:none">
+            <defs>
+              <linearGradient id="grad-green-a" x1="0%" x2="0%" y1="0%" y2="100%">
+                <stop offset="0%" style="stop-color:#10b981;stop-opacity:0.2"></stop>
+                <stop offset="100%" style="stop-color:#10b981;stop-opacity:0"></stop>
+              </linearGradient>
+            </defs>
+            <line stroke="#f1f5f9" stroke-width="1" x1="0" x2="800" y1="50" y2="50"></line>
+            <line stroke="#f1f5f9" stroke-width="1" x1="0" x2="800" y1="100" y2="100"></line>
+            <line stroke="#f1f5f9" stroke-width="1" x1="0" x2="800" y1="150" y2="150"></line>
+            <line stroke="#f1f5f9" stroke-width="1" x1="0" x2="800" y1="200" y2="200"></line>
+            <path d="M0,200 C100,180 200,210 300,140 C400,160 500,100 600,120 C700,70 800,90 L800,250 L0,250 Z" fill="url(#grad-green-a)"></path>
+            <path d="M0,200 C100,180 200,210 300,140 C400,160 500,100 600,120 C700,70 800,90" fill="none" stroke="#10b981" stroke-width="3"></path>
+            <path d="M0,230 C100,210 200,190 300,200 C400,170 500,180 600,140 C700,120 800,110" fill="none" stroke="#3b82f6" stroke-dasharray="8,4" stroke-width="3"></path>
+          </svg>
+          <!-- X-axis labels monthly -->
+          <div id="national-labels-monthly" class="absolute bottom-0 w-full flex justify-between text-[11px] font-bold text-slate-400 mt-xs uppercase">
+            <span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span><span>May</span><span>Jun</span><span>Jul</span><span>Aug</span><span>Sep</span><span>Oct</span><span>Nov</span><span>Dec</span>
+          </div>
+          <div id="national-labels-annual" class="absolute bottom-0 w-full flex justify-between text-[11px] font-bold text-slate-400 mt-xs uppercase" style="display:none">
+            <span>2020</span><span>2021</span><span>2022</span><span>2023</span><span>2024</span><span>2025 (Proj)</span>
+          </div>
+        </div>
+      </div>
+      <!-- Regional Risk Map -->
+      <div class="col-span-12 lg:col-span-4 bg-white rounded-xl shadow-[0_4px_12px_rgba(11,28,48,0.05)] border border-slate-100 p-lg flex flex-col">
+        <h3 class="font-h3 text-h3 text-on-surface mb-base">Regional Risk Map</h3>
+        <p class="font-body-sm text-body-sm text-secondary mb-lg">Geospatial risk distribution.</p>
+        <div class="flex-1 flex items-center justify-center relative">
+          <div class="w-full h-full bg-slate-50 rounded-lg flex items-center justify-center p-4">
+            <svg class="w-full max-h-[220px]" viewBox="0 0 200 200">
+              <path class="hover:fill-emerald-400 cursor-pointer transition-colors" d="M40,40 L60,30 L90,40 L110,60 L100,90 L70,100 L40,80 Z" fill="#10b981" opacity="0.8"></path>
+              <path class="hover:fill-amber-400 cursor-pointer transition-colors" d="M110,60 L140,50 L160,70 L170,110 L140,140 L100,120 L100,90 Z" fill="#f59e0b" opacity="0.8"></path>
+              <path class="hover:fill-emerald-400 cursor-pointer transition-colors" d="M70,100 L100,120 L90,160 L60,180 L30,160 L20,120 Z" fill="#10b981" opacity="0.8"></path>
+              <path class="hover:fill-sky-400 cursor-pointer transition-colors" d="M140,140 L160,160 L150,190 L120,185 L100,160 Z" fill="#0ea5e9" opacity="0.8"></path>
+            </svg>
+          </div>
+          <div class="absolute bottom-md left-md flex flex-col gap-xs">
+            <div class="flex items-center gap-xs"><span class="h-2 w-2 rounded-full bg-emerald-500"></span><span class="text-[10px] font-bold text-slate-500 uppercase">Stable</span></div>
+            <div class="flex items-center gap-xs"><span class="h-2 w-2 rounded-full bg-amber-500"></span><span class="text-[10px] font-bold text-slate-500 uppercase">Attention</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bottom Info Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-lg">
+      <section class="bg-white rounded-xl shadow-[0_4px_12px_rgba(11,28,48,0.05)] border border-slate-100 p-lg">
+        <h3 class="font-h3 text-h3 text-on-surface mb-lg">Healthcare Access</h3>
+        <div class="space-y-lg">
+          <div>
+            <div class="flex justify-between items-end mb-xs">
+              <span class="font-label-caps text-label-caps text-secondary uppercase">Urban Areas</span>
+              <span class="font-h3 text-h3 text-primary">92%</span>
+            </div>
+            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-emerald-600 rounded-full" style="width: 92%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between items-end mb-xs">
+              <span class="font-label-caps text-label-caps text-secondary uppercase">Rural Regions</span>
+              <span class="font-h3 text-h3 text-primary">73%</span>
+            </div>
+            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-emerald-600 rounded-full" style="width: 73%"></div>
+            </div>
+          </div>
+          <div>
+            <div class="flex justify-between items-end mb-xs">
+              <span class="font-label-caps text-label-caps text-secondary uppercase">Remote Outposts</span>
+              <span class="font-h3 text-h3 text-tertiary">58%</span>
+            </div>
+            <div class="h-2 w-full bg-slate-100 rounded-full overflow-hidden">
+              <div class="h-full bg-tertiary-container rounded-full" style="width: 58%"></div>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="bg-white rounded-xl shadow-[0_4px_12px_rgba(11,28,48,0.05)] border border-slate-100 p-lg">
+        <h3 class="font-h3 text-h3 text-on-surface mb-lg">Key Achievements</h3>
+        <div class="space-y-md">
+          <div class="flex items-center p-md bg-emerald-50/50 rounded-lg border border-emerald-100/50">
+            <span class="material-symbols-outlined text-emerald-600 mr-md" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            <div>
+              <p class="font-label-caps text-label-caps text-emerald-800 uppercase">Universal Healthcare</p>
+              <p class="text-h3 font-h3 text-emerald-950">80% Coverage</p>
+            </div>
+          </div>
+          <div class="flex items-center p-md bg-emerald-50/50 rounded-lg border border-emerald-100/50">
+            <span class="material-symbols-outlined text-emerald-600 mr-md" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            <div>
+              <p class="font-label-caps text-label-caps text-emerald-800 uppercase">Early Screening</p>
+              <p class="text-h3 font-h3 text-emerald-950">TB Detection Meta</p>
+            </div>
+          </div>
+          <div class="flex items-center p-md bg-emerald-50/50 rounded-lg border border-emerald-100/50">
+            <span class="material-symbols-outlined text-emerald-600 mr-md" style="font-variation-settings: 'FILL' 1;">check_circle</span>
+            <div>
+              <p class="font-label-caps text-label-caps text-emerald-800 uppercase">Child Safety</p>
+              <p class="text-h3 font-h3 text-emerald-950">Immunization Peak</p>
+            </div>
+          </div>
+        </div>
+      </section>
+      <section class="bg-white rounded-xl shadow-[0_4px_12px_rgba(11,28,48,0.05)] border border-slate-100 p-lg">
+        <h3 class="font-h3 text-h3 text-on-surface mb-lg">Budget Distribution</h3>
+        <div class="space-y-base">
+          <div class="flex items-center justify-between py-md border-b border-slate-50">
+            <div class="flex items-center gap-md">
+              <div class="h-10 w-10 rounded bg-slate-50 flex items-center justify-center text-emerald-600"><span class="material-symbols-outlined">medical_services</span></div>
+              <span class="font-body-md text-body-md text-on-surface">Primary Health</span>
+            </div>
+            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-label-caps rounded-full">42%</span>
+          </div>
+          <div class="flex items-center justify-between py-md border-b border-slate-50">
+            <div class="flex items-center gap-md">
+              <div class="h-10 w-10 rounded bg-slate-50 flex items-center justify-center text-slate-400"><span class="material-symbols-outlined">domain</span></div>
+              <span class="font-body-md text-body-md text-on-surface">Tertiary Facilities</span>
+            </div>
+            <span class="px-3 py-1 bg-slate-100 text-slate-600 text-label-caps rounded-full">28%</span>
+          </div>
+          <div class="flex items-center justify-between py-md border-b border-slate-50">
+            <div class="flex items-center gap-md">
+              <div class="h-10 w-10 rounded bg-slate-50 flex items-center justify-center text-slate-400"><span class="material-symbols-outlined">science</span></div>
+              <span class="font-body-md text-body-md text-on-surface">Research &amp; Dev</span>
+            </div>
+            <span class="px-3 py-1 bg-slate-100 text-slate-600 text-label-caps rounded-full">15%</span>
+          </div>
+          <div class="flex items-center justify-between py-md">
+            <div class="flex items-center gap-md">
+              <div class="h-10 w-10 rounded bg-slate-50 flex items-center justify-center text-slate-400"><span class="material-symbols-outlined">emergency</span></div>
+              <span class="font-body-md text-body-md text-on-surface">Emergency Response</span>
+            </div>
+            <span class="px-3 py-1 bg-slate-100 text-slate-600 text-label-caps rounded-full">15%</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- ===================== PAGE: DIVISIONAL PERFORMANCE ===================== -->
+  <div id="page-divisional" class="page-section p-gutter max-w-7xl mx-auto space-y-xl w-full">
+    <div class="flex justify-between items-end">
+      <div>
+        <h2 class="font-h1 text-h1 text-on-surface">Divisional Performance Overview</h2>
+        <p class="font-body-md text-body-md text-secondary mt-1">Real-time analytical comparison of health metrics across regional divisions.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <!-- Monthly/Annual Toggle -->
+        <div class="flex items-center bg-slate-100 rounded-lg p-1 gap-1">
+          <button onclick="setChartMode('monthly', 'divisional')" id="divisional-monthly-btn" class="chart-toggle-btn px-3 py-1.5 rounded-md text-sm font-semibold bg-white text-emerald-700 shadow-sm transition-all">monthly</button>
+          <button onclick="setChartMode('annual', 'divisional')" id="divisional-annual-btn" class="chart-toggle-btn px-3 py-1.5 rounded-md text-sm font-semibold text-slate-500 transition-all">annual</button>
+        </div>
+        <div class="flex items-center gap-2 bg-surface-container-low px-4 py-2 rounded-lg border border-slate-200">
+          <span class="material-symbols-outlined text-emerald-600">calendar_today</span>
+          <span class="text-sm font-medium text-slate-700" id="divisional-period-label">monthly - 2025</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bar Chart -->
+    <section class="bg-white p-lg rounded-xl shadow-[0px_4px_12px_rgba(11,28,48,0.05)] border border-slate-100">
+      <div class="flex justify-between items-center mb-xl">
+        <h3 class="font-h3 text-h3 text-on-surface" id="divisional-chart-title">Divisional Performance Comparison (monthly)</h3>
+        <div class="flex items-center gap-4 text-xs font-semibold text-slate-500 uppercase tracking-widest">
+          <div class="flex items-center gap-2"><span class="w-3 h-3 bg-surface-variant rounded-sm"></span><span>Target</span></div>
+          <div class="flex items-center gap-2"><span class="w-3 h-3 bg-[#0061e0] rounded-sm"></span><span>Actual</span></div>
+        </div>
+      </div>
+      <!-- Monthly bars -->
+      <div id="divisional-bars-monthly" class="relative h-[320px] flex items-end justify-between px-8 pt-4">
+        <div class="absolute inset-x-8 top-4 bottom-0 flex flex-col justify-between pointer-events-none">
+          <div class="border-t border-slate-100 w-full h-0"></div>
+          <div class="border-t border-slate-100 w-full h-0"></div>
+          <div class="border-t border-slate-100 w-full h-0"></div>
+          <div class="border-t border-slate-100 w-full h-0"></div>
+          <div class="border-t-2 border-slate-200 w-full h-0"></div>
+        </div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[78%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[88%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Dhaka</span></div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[65%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[82%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Chattogram</span></div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[57%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[75%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Rajshahi</span></div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[70%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[78%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Khulna</span></div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[48%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[70%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Barishal</span></div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[55%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[80%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Sylhet</span></div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[42%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[65%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Rangpur</span></div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[51%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[73%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Mymensingh</span></div>
+      </div>
+      <!-- Annual bars -->
+      <div id="divisional-bars-annual" class="relative h-[320px] flex items-end justify-between px-8 pt-4" style="display:none">
+        <div class="absolute inset-x-8 top-4 bottom-0 flex flex-col justify-between pointer-events-none">
+          <div class="border-t border-slate-100 w-full h-0"></div><div class="border-t border-slate-100 w-full h-0"></div><div class="border-t border-slate-100 w-full h-0"></div><div class="border-t border-slate-100 w-full h-0"></div><div class="border-t-2 border-slate-200 w-full h-0"></div>
+        </div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[85%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[92%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Dhaka</span></div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[72%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[88%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Chattogram</span></div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[64%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[80%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Rajshahi</span></div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[78%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[82%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Khulna</span></div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[55%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[75%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Barishal</span></div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[61%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[85%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Sylhet</span></div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[48%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[70%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Rangpur</span></div>
+        <div class="group relative flex flex-col items-center w-12 gap-1"><div class="w-full bg-[#0061e0] h-[58%] rounded-t-sm z-10 hover:brightness-110 transition-all"></div><div class="absolute bottom-0 w-full bg-surface-container h-[78%] rounded-t-sm"></div><span class="font-label-caps text-label-caps text-slate-500 mt-4 rotate-45 origin-left whitespace-nowrap">Mymensingh</span></div>
+      </div>
+    </section>
+
+    <!-- Detail Cards -->
+    <section class="space-y-md">
+      <div class="flex items-center gap-2 mb-md">
+        <span class="material-symbols-outlined text-primary">list_alt</span>
+        <h3 class="font-h3 text-h3 text-on-surface">Detailed Divisional Insights</h3>
+      </div>
+      <div class="bg-white border-2 border-emerald-500/20 rounded-xl overflow-hidden shadow-md">
+        <div class="flex items-center justify-between p-lg bg-emerald-50/30">
+          <div class="flex items-center gap-4">
+            <div class="w-10 h-10 bg-primary text-white flex items-center justify-center rounded-lg shadow-sm"><span class="material-symbols-outlined">location_city</span></div>
+            <div><h4 class="font-h2 text-h2 text-on-surface">Dhaka Division</h4><span class="font-label-caps text-label-caps text-primary tracking-widest">CENTRAL ADMINISTRATIVE REGION</span></div>
+          </div>
+          <div class="flex items-center gap-6">
+            <div class="bg-primary/10 border border-primary/20 text-primary px-4 py-1.5 rounded-full font-bold flex items-center gap-2"><span class="text-xs uppercase">Score:</span><span>88/100</span></div>
+            <span class="material-symbols-outlined text-slate-400">expand_less</span>
+          </div>
+        </div>
+        <div class="grid grid-cols-4 gap-lg p-lg bg-white">
+          <div class="p-md bg-slate-50 border border-slate-100 rounded-lg"><span class="font-label-caps text-label-caps text-slate-500 block mb-1">PATIENTS SERVED</span><div class="flex items-baseline gap-2"><span class="font-stats-lg text-stats-lg text-slate-900">892K</span><span class="text-emerald-600 text-xs font-bold">+12%</span></div><div class="w-full bg-slate-200 h-1 rounded-full mt-3"><div class="bg-emerald-500 h-1 rounded-full" style="width: 85%"></div></div></div>
+          <div class="p-md bg-slate-50 border border-slate-100 rounded-lg"><span class="font-label-caps text-label-caps text-slate-500 block mb-1">COVERAGE</span><div class="flex items-baseline gap-2"><span class="font-stats-lg text-stats-lg text-slate-900">82%</span><span class="text-emerald-600 text-xs font-bold">ON TRACK</span></div><div class="w-full bg-slate-200 h-1 rounded-full mt-3"><div class="bg-emerald-500 h-1 rounded-full" style="width: 82%"></div></div></div>
+          <div class="p-md bg-slate-50 border border-slate-100 rounded-lg"><span class="font-label-caps text-label-caps text-slate-500 block mb-1">PATIENTS/CLINIC</span><div class="flex items-baseline gap-2"><span class="font-stats-lg text-stats-lg text-slate-900">1832</span></div><div class="w-full bg-slate-200 h-1 rounded-full mt-3"><div class="bg-slate-400 h-1 rounded-full" style="width: 60%"></div></div></div>
+          <div class="p-md bg-slate-50 border border-slate-100 rounded-lg"><span class="font-label-caps text-label-caps text-slate-500 block mb-1">DISTRICTS</span><div class="flex items-baseline gap-2"><span class="font-stats-lg text-stats-lg text-slate-900">13</span><span class="text-slate-400 text-xs font-medium uppercase ml-2">Total active</span></div><div class="w-full bg-slate-200 h-1 rounded-full mt-3"><div class="bg-slate-400 h-1 rounded-full" style="width: 100%"></div></div></div>
+        </div>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-xl overflow-hidden hover:bg-slate-50 transition-colors cursor-pointer group">
+        <div class="flex items-center justify-between p-lg"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-slate-200 text-slate-600 flex items-center justify-center rounded-lg"><span class="material-symbols-outlined">waves</span></div><div><h4 class="font-h3 text-h3 text-on-surface">Chattogram Division</h4><span class="font-label-caps text-label-caps text-slate-400 tracking-widest uppercase">COASTAL OPERATIONS REGION</span></div></div><div class="flex items-center gap-6"><div class="bg-tertiary-container/10 border border-tertiary-container/20 text-tertiary px-4 py-1.5 rounded-full font-bold flex items-center gap-2"><span class="text-xs uppercase">Score:</span><span>74/100</span></div><span class="material-symbols-outlined text-slate-400">expand_more</span></div></div>
+      </div>
+      <div class="bg-white border border-slate-200 rounded-xl overflow-hidden hover:bg-slate-50 transition-colors cursor-pointer group">
+        <div class="flex items-center justify-between p-lg"><div class="flex items-center gap-4"><div class="w-10 h-10 bg-slate-200 text-slate-600 flex items-center justify-center rounded-lg"><span class="material-symbols-outlined">agriculture</span></div><div><h4 class="font-h3 text-h3 text-on-surface">Rajshahi Division</h4><span class="font-label-caps text-label-caps text-slate-400 tracking-widest uppercase">NORTHERN AGRARIAN REGION</span></div></div><div class="flex items-center gap-6"><div class="bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 px-4 py-1.5 rounded-full font-bold flex items-center gap-2"><span class="text-xs uppercase">Score:</span><span>81/100</span></div><span class="material-symbols-outlined text-slate-400">expand_more</span></div></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- ===================== PAGE: SDG & GOALS ===================== -->
+  <div id="page-sdg" class="page-section p-xl max-w-5xl mx-auto space-y-xl w-full">
+    <div class="flex justify-between items-center">
+      <div>
+        <h2 class="font-h2 text-h2 text-slate-900">SDG &amp; Goals</h2>
+        <p class="font-body-sm text-body-sm text-slate-500">2024 Audit Cycle</p>
+      </div>
+      <!-- Monthly/Annual Toggle -->
+      <div class="flex items-center bg-slate-100 rounded-lg p-1 gap-1">
+        <button onclick="setChartMode('monthly', 'sdg')" id="sdg-monthly-btn" class="chart-toggle-btn px-3 py-1.5 rounded-md text-sm font-semibold bg-white text-emerald-700 shadow-sm transition-all">monthly</button>
+        <button onclick="setChartMode('annual', 'sdg')" id="sdg-annual-btn" class="chart-toggle-btn px-3 py-1.5 rounded-md text-sm font-semibold text-slate-500 transition-all">annual</button>
+      </div>
+    </div>
+
+    <section class="bg-white rounded-xl p-lg border border-slate-200 shadow-sm flex gap-lg">
+      <div class="flex-1">
+        <p class="text-emerald-600 font-label-caps text-label-caps mb-2">Sustainable Development Goals 2030</p>
+        <h3 class="font-h1 text-h1 mb-md">National Health Performance Audit</h3>
+        <p class="font-body-md text-body-md text-slate-600 max-w-3xl">Comprehensive review of the nation's progress towards health-related SDGs. This dashboard tracks real-time performance against 2030 targets to facilitate data-driven policy interventions.</p>
+      </div>
+      <div class="w-48 h-32 rounded-lg overflow-hidden shrink-0">
+        <img class="w-full h-full object-cover opacity-80 mix-blend-multiply bg-emerald-100" src="https://lh3.googleusercontent.com/aida-public/AB6AXuA3P3LtoPg6X5315k8NlPS5809oz6eUR4sQDzGPDHTZfxXvSzPO_n9o-vLfpGzKERM_zhnGG3J1G5KuzGEQW5iG_Xf0gLEZGICsrhuefWGcEAugJuJGjFTpK3e6kuj-8Dl6l_-6TBsuSuTsqG9tdbDLXjMNJP8DUgzoQFhdrsEQ82WSXmvGG_a7ypOfB0H1LTLs2ev6xfeHjQlnI0xrpu4tSH2CU5l7m-R81ge-fs212w7ILFKzA1vTjtoy-IwYdUuIx3R-bPOO7EPD" alt="SDG"/>
+      </div>
+    </section>
+
+    <!-- SDG Period indicator -->
+    <div class="flex items-center gap-2 bg-emerald-50 border border-emerald-200 rounded-lg px-4 py-2 w-fit">
+      <span class="material-symbols-outlined text-emerald-600 text-sm">bar_chart</span>
+      <span class="text-sm font-semibold text-emerald-700" id="sdg-period-label">monthly data - 2025</span>
+    </div>
+
+    <section class="space-y-md">
+      <!-- Goal 1 -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:border-emerald-200 transition-all">
+        <div class="p-lg">
+          <div class="flex justify-between items-start mb-md">
+            <div class="flex gap-4">
+              <div class="w-12 h-12 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0"><span class="material-symbols-outlined text-3xl">medical_services</span></div>
+              <div><h4 class="font-h3 text-h3 text-slate-900">Universal Health Coverage</h4><p class="font-body-sm text-body-sm text-slate-500">Essential service coverage index (SDG 3.8.1)</p></div>
+            </div>
+            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full flex items-center gap-1">ON TRACK<span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-lg mt-6">
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">CURRENT INDEX</p><p class="font-stats-lg text-stats-lg text-slate-900" id="sdg1-current">74.2%</p></div>
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">TARGET 2030</p><p class="font-stats-lg text-stats-lg text-emerald-600">80.0%</p></div>
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">DEADLINE</p><p class="font-stats-lg text-stats-lg text-slate-900">DEC 2030</p></div>
+          </div>
+          <div class="mt-8 space-y-2">
+            <div class="flex justify-between text-xs font-semibold text-slate-600"><span>Progress Pathway</span><span>92% of interim target achieved</span></div>
+            <div class="h-4 w-full bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary transition-all duration-1000" style="width: 92%;"></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Goal 2 -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:border-tertiary-container transition-all">
+        <div class="p-lg">
+          <div class="flex justify-between items-start mb-md">
+            <div class="flex gap-4">
+              <div class="w-12 h-12 rounded-lg bg-orange-50 flex items-center justify-center text-tertiary-container shrink-0"><span class="material-symbols-outlined text-3xl">pregnant_woman</span></div>
+              <div><h4 class="font-h3 text-h3 text-slate-900">Maternal Mortality</h4><p class="font-body-sm text-body-sm text-slate-500">Ratio per 100,000 live births (SDG 3.1.1)</p></div>
+            </div>
+            <span class="px-3 py-1 bg-orange-100 text-tertiary-container text-xs font-bold rounded-full flex items-center gap-1">NEEDS ACCELERATION<span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-lg mt-6">
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">CURRENT RATIO</p><p class="font-stats-lg text-stats-lg text-slate-900" id="sdg2-current">112</p></div>
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">TARGET 2030</p><p class="font-stats-lg text-stats-lg text-tertiary-container">&lt; 70</p></div>
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">DEADLINE</p><p class="font-stats-lg text-stats-lg text-slate-900">DEC 2030</p></div>
+          </div>
+          <div class="mt-8 space-y-2">
+            <div class="flex justify-between text-xs font-semibold text-slate-600"><span>Reduction Curve</span><span>45% of reduction required</span></div>
+            <div class="h-4 w-full bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-tertiary-container transition-all duration-1000" style="width: 45%;"></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Goal 3 -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:border-emerald-200 transition-all">
+        <div class="p-lg">
+          <div class="flex justify-between items-start mb-md">
+            <div class="flex gap-4">
+              <div class="w-12 h-12 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0"><span class="material-symbols-outlined text-3xl">child_care</span></div>
+              <div><h4 class="font-h3 text-h3 text-slate-900">Child Mortality</h4><p class="font-body-sm text-body-sm text-slate-500">Under-5 mortality rate per 1,000 (SDG 3.2.1)</p></div>
+            </div>
+            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full flex items-center gap-1">ON TRACK<span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-lg mt-6">
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">CURRENT RATE</p><p class="font-stats-lg text-stats-lg text-slate-900" id="sdg3-current">24.5</p></div>
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">TARGET 2030</p><p class="font-stats-lg text-stats-lg text-emerald-600">25.0</p></div>
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">DEADLINE</p><p class="font-stats-lg text-stats-lg text-slate-900">DEC 2030</p></div>
+          </div>
+          <div class="mt-8 space-y-2">
+            <div class="flex justify-between text-xs font-semibold text-slate-600"><span>Safety Threshold</span><span>Goal achieved (Maintained progress)</span></div>
+            <div class="h-4 w-full bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary transition-all duration-1000" style="width: 100%;"></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Goal 4 -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:border-tertiary-container transition-all">
+        <div class="p-lg">
+          <div class="flex justify-between items-start mb-md">
+            <div class="flex gap-4">
+              <div class="w-12 h-12 rounded-lg bg-orange-50 flex items-center justify-center text-tertiary-container shrink-0"><span class="material-symbols-outlined text-3xl">coronavirus</span></div>
+              <div><h4 class="font-h3 text-h3 text-slate-900">TB Elimination</h4><p class="font-body-sm text-body-sm text-slate-500">Tuberculosis incidence per 100,000 (SDG 3.3.2)</p></div>
+            </div>
+            <span class="px-3 py-1 bg-orange-100 text-tertiary-container text-xs font-bold rounded-full flex items-center gap-1">NEEDS ACCELERATION<span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-lg mt-6">
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">INCIDENCE RATE</p><p class="font-stats-lg text-stats-lg text-slate-900">142</p></div>
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">TARGET 2030</p><p class="font-stats-lg text-stats-lg text-tertiary-container">20</p></div>
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">DEADLINE</p><p class="font-stats-lg text-stats-lg text-slate-900">DEC 2030</p></div>
+          </div>
+          <div class="mt-8 space-y-2">
+            <div class="flex justify-between text-xs font-semibold text-slate-600"><span>Reduction Pace</span><span>18% progress against baseline</span></div>
+            <div class="h-4 w-full bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-tertiary-container transition-all duration-1000" style="width: 18%;"></div></div>
+          </div>
+        </div>
+      </div>
+      <!-- Goal 5 -->
+      <div class="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden hover:border-emerald-200 transition-all">
+        <div class="p-lg">
+          <div class="flex justify-between items-start mb-md">
+            <div class="flex gap-4">
+              <div class="w-12 h-12 rounded-lg bg-emerald-50 flex items-center justify-center text-emerald-600 shrink-0"><span class="material-symbols-outlined text-3xl">monitor_heart</span></div>
+              <div><h4 class="font-h3 text-h3 text-slate-900">Diabetes Screening</h4><p class="font-body-sm text-body-sm text-slate-500">Prevalence of diabetic screening in adult pop (Nat Goal 4.2)</p></div>
+            </div>
+            <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-xs font-bold rounded-full flex items-center gap-1">ON TRACK<span class="material-symbols-outlined text-sm">arrow_forward</span></span>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-lg mt-6">
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">SCREENING RATE</p><p class="font-stats-lg text-stats-lg text-slate-900">68%</p></div>
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">TARGET 2030</p><p class="font-stats-lg text-stats-lg text-emerald-600">75%</p></div>
+            <div><p class="text-slate-400 font-label-caps text-[11px] mb-1">DEADLINE</p><p class="font-stats-lg text-stats-lg text-slate-900">JUN 2030</p></div>
+          </div>
+          <div class="mt-8 space-y-2">
+            <div class="flex justify-between text-xs font-semibold text-slate-600"><span>Implementation Velocity</span><span>78% implementation complete</span></div>
+            <div class="h-4 w-full bg-slate-100 rounded-full overflow-hidden"><div class="h-full bg-primary transition-all duration-1000" style="width: 78%;"></div></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="p-xl border-t border-slate-200 mt-xl">
+      <div class="max-w-5xl mx-auto flex justify-between items-center text-sm text-slate-500">
+        <p>© 2024 Global HealthMetrics Operations. Data integrity verified by WHO standards.</p>
+        <div class="flex gap-4">
+          <a class="hover:text-emerald-600 transition-colors cursor-pointer">Data Protocol</a>
+          <a class="hover:text-emerald-600 transition-colors cursor-pointer">Methodology</a>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <!-- ===================== PAGE: POLICY INITIATIVES ===================== -->
+  <div id="page-policy" class="page-section p-8 max-w-7xl mx-auto space-y-8 w-full">
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
+      <div>
+        <h2 class="font-h1 text-h1 text-on-surface">Policy Initiatives</h2>
+        <p class="font-body-md text-body-md text-secondary">Strategic health transformation roadmap for the fiscal year 2026.</p>
+      </div>
+      <div class="flex items-center gap-3">
+        <!-- Monthly/Annual Toggle -->
+        <div class="flex items-center bg-slate-100 rounded-lg p-1 gap-1">
+          <button onclick="setChartMode('monthly', 'policy')" id="policy-monthly-btn" class="chart-toggle-btn px-3 py-1.5 rounded-md text-sm font-semibold bg-white text-emerald-700 shadow-sm transition-all">monthly</button>
+          <button onclick="setChartMode('annual', 'policy')" id="policy-annual-btn" class="chart-toggle-btn px-3 py-1.5 rounded-md text-sm font-semibold text-slate-500 transition-all">annual</button>
+        </div>
+        <div class="px-4 py-2 bg-white border border-slate-200 rounded-lg shadow-sm flex items-center gap-3">
+          <span class="w-3 h-3 rounded-full bg-emerald-500"></span>
+          <span class="text-sm font-medium text-slate-600" id="policy-period-label">monthly - 2025</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+      <div class="bg-white rounded-xl border border-slate-200 shadow-[0_4px_12px_rgba(11,28,48,0.05)] overflow-hidden group">
+        <div class="h-2 w-full bg-emerald-600"></div>
+        <div class="p-lg">
+          <div class="flex justify-between items-start mb-md"><h3 class="font-h3 text-h3 text-on-surface">Digital Health Records</h3><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">In Progress</span></div>
+          <p class="font-body-sm text-body-sm text-secondary mb-xl">Implementing a unified patient data repository across 14 divisions to streamline diagnostics and treatment historical tracking.</p>
+          <div class="grid grid-cols-2 gap-md mb-xl">
+            <div class="p-md bg-slate-50 rounded-lg"><p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Total Budget</p><p class="text-lg font-bold text-on-surface">৳45Cr</p></div>
+            <div class="p-md bg-slate-50 rounded-lg"><p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Deadline</p><p class="text-lg font-bold text-on-surface">Dec 2026</p></div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2"><span class="material-symbols-outlined text-orange-500 text-sm" style="font-variation-settings: 'FILL' 1;">warning</span><span class="text-xs font-bold text-orange-600 uppercase tracking-tighter">High Impact</span></div>
+            <button class="flex items-center gap-2 text-primary font-semibold text-sm hover:underline"><span>Resource Allocation</span><span class="material-symbols-outlined text-sm">open_in_new</span></button>
+          </div>
+        </div>
+      </div>
+      <div class="bg-white rounded-xl border border-slate-200 shadow-[0_4px_12px_rgba(11,28,48,0.05)] overflow-hidden group">
+        <div class="h-2 w-full bg-tertiary-container"></div>
+        <div class="p-lg">
+          <div class="flex justify-between items-start mb-md"><h3 class="font-h3 text-h3 text-on-surface">Rural Healthcare Expansion</h3><span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold bg-emerald-100 text-emerald-800">In Progress</span></div>
+          <p class="font-body-sm text-body-sm text-secondary mb-xl">Strategic deployment of 150 community clinics in remote areas to provide primary health care services and maternal support.</p>
+          <div class="grid grid-cols-2 gap-md mb-xl">
+            <div class="p-md bg-slate-50 rounded-lg"><p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Total Budget</p><p class="text-lg font-bold text-on-surface">৳45Cr</p></div>
+            <div class="p-md bg-slate-50 rounded-lg"><p class="text-xs text-slate-500 font-medium uppercase tracking-wider mb-1">Deadline</p><p class="text-lg font-bold text-on-surface">Nov 2026</p></div>
+          </div>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2"><span class="material-symbols-outlined text-red-500 text-sm" style="font-variation-settings: 'FILL' 1;">error</span><span class="text-xs font-bold text-red-600 uppercase tracking-tighter">Critical Impact</span></div>
+            <button class="flex items-center gap-2 text-primary font-semibold text-sm hover:underline"><span>Resource Allocation</span><span class="material-symbols-outlined text-sm">open_in_new</span></button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <section class="bg-white p-xl rounded-xl border border-slate-200 shadow-[0_4px_12px_rgba(11,28,48,0.05)]">
+      <div class="flex items-center justify-between mb-xl">
+        <h3 class="font-h2 text-h2 text-on-surface">Policy Implementation Timeline</h3>
+        <div class="flex items-center gap-2 text-body-sm text-secondary"><span class="material-symbols-outlined text-sm">calendar_month</span><span>Fiscal Year 2026</span></div>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-md">
+        <div class="relative p-md rounded-lg bg-blue-50 border border-blue-100 min-h-[160px]"><div class="flex justify-between items-center mb-xs"><span class="text-xs font-bold text-blue-800 tracking-wider">Q1 2026</span><span class="material-symbols-outlined text-blue-400 text-lg">flag</span></div><p class="text-sm font-semibold text-blue-900 mb-2">Stakeholder Alignment</p><ul class="text-xs text-blue-700 space-y-1"><li>• Policy Framework finalization</li><li>• Vendor selection process</li></ul><div class="absolute bottom-4 right-4 text-[10px] text-blue-400 font-bold">JAN - MAR</div></div>
+        <div class="relative p-md rounded-lg bg-purple-50 border border-purple-100 min-h-[160px]"><div class="flex justify-between items-center mb-xs"><span class="text-xs font-bold text-purple-800 tracking-wider">Q2 2026</span><span class="material-symbols-outlined text-purple-400 text-lg">rocket_launch</span></div><p class="text-sm font-semibold text-purple-900 mb-2">Alpha Pilot Testing</p><ul class="text-xs text-purple-700 space-y-1"><li>• Pilot in Dhaka &amp; Sylhet</li><li>• Initial staff training</li></ul><div class="absolute bottom-4 right-4 text-[10px] text-purple-400 font-bold">APR - JUN</div></div>
+        <div class="relative p-md rounded-lg bg-blue-50 border border-blue-100 min-h-[160px]"><div class="flex justify-between items-center mb-xs"><span class="text-xs font-bold text-blue-800 tracking-wider">Q3 2026</span><span class="material-symbols-outlined text-blue-400 text-lg">grid_view</span></div><p class="text-sm font-semibold text-blue-900 mb-2">Nationwide Rollout</p><ul class="text-xs text-blue-700 space-y-1"><li>• Core platform live</li><li>• Rural clinic connectivity</li></ul><div class="absolute bottom-4 right-4 text-[10px] text-blue-400 font-bold">JUL - SEP</div></div>
+        <div class="relative p-md rounded-lg bg-purple-50 border border-purple-100 min-h-[160px]"><div class="flex justify-between items-center mb-xs"><span class="text-xs font-bold text-purple-800 tracking-wider">Q4 2026</span><span class="material-symbols-outlined text-purple-400 text-lg">check_circle</span></div><p class="text-sm font-semibold text-purple-900 mb-2">Final Review &amp; Scale</p><ul class="text-xs text-purple-700 space-y-1"><li>• Impact assessment report</li><li>• 2027 Budget adjustments</li></ul><div class="absolute bottom-4 right-4 text-[10px] text-purple-400 font-bold">OCT - DEC</div></div>
+      </div>
+    </section>
+
+    <div class="bg-surface-container rounded-xl p-xl border border-outline-variant flex flex-col md:flex-row gap-xl items-center">
+      <div class="flex-1">
+        <h3 class="font-h3 text-h3 text-on-surface mb-xs">Resource Allocation Overview</h3>
+        <p class="font-body-sm text-body-sm text-secondary mb-lg">Visualizing current human capital distribution across strategic initiatives.</p>
+        <div class="space-y-md">
+          <div class="flex flex-col gap-xs"><div class="flex justify-between text-xs font-bold text-on-surface"><span>Digital Infrastructure Specialists</span><span>78% Allocated</span></div><div class="h-2 w-full bg-white rounded-full overflow-hidden"><div class="h-full bg-emerald-600 rounded-full w-[78%]"></div></div></div>
+          <div class="flex flex-col gap-xs"><div class="flex justify-between text-xs font-bold text-on-surface"><span>Rural Medical Practitioners</span><span>92% Allocated</span></div><div class="h-2 w-full bg-white rounded-full overflow-hidden"><div class="h-full bg-tertiary-container rounded-full w-[92%]"></div></div></div>
+        </div>
+      </div>
+      <div class="w-full md:w-1/3 aspect-video bg-white rounded-lg border border-slate-200 shadow-sm relative overflow-hidden">
+        <img alt="Data visualization" class="w-full h-full object-cover opacity-80" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC8CA3R4_C9ubiAu2cfIAlr_9lV-lzuWtKRMhpG2MTftM9lxtsW5_rFheEbTxspUMKMQ6kjfSqM3fHqa_zHjf85X42biG1omh71tP6uK-GDC0q1A2Vwpb-cMB1w1Mbupg-dGH7IjmZWj4fd4i-M1l44iuEKNtunla2IHye_SEKy7Ga43sQ6ED66CNywCqK1-QDJfEYzgbYXI1eq8a4Tx9clLzfY0l-B15YIYJxhunxtuY2PUiKideS3jvfpE4iGoGOCVl0mZMclmRLK"/>
+        <div class="absolute inset-0 bg-gradient-to-t from-white/80 to-transparent flex items-end p-4"><span class="text-xs font-bold text-slate-700">Real-time Staff Distribution Heatmap</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== PAGE: BENCHMARKS ===================== -->
+  <div id="page-benchmarks" class="page-section p-8 max-w-7xl mx-auto space-y-xl w-full">
+    <div class="flex justify-between items-start">
+      <div>
+        <h2 class="font-h1 text-h1 text-on-surface">International Benchmarks</h2>
+        <p class="font-body-lg text-body-lg text-secondary">Comparative analysis of regional healthcare outcomes and global partnership status.</p>
+      </div>
+      <!-- Monthly/Annual Toggle -->
+      <div class="flex items-center bg-slate-100 rounded-lg p-1 gap-1">
+        <button onclick="setChartMode('monthly', 'benchmarks')" id="benchmarks-monthly-btn" class="chart-toggle-btn px-3 py-1.5 rounded-md text-sm font-semibold bg-white text-emerald-700 shadow-sm transition-all">monthly</button>
+        <button onclick="setChartMode('annual', 'benchmarks')" id="benchmarks-annual-btn" class="chart-toggle-btn px-3 py-1.5 rounded-md text-sm font-semibold text-slate-500 transition-all">annual</button>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-12 gap-gutter">
+      <!-- Main Chart Card -->
+      <div class="col-span-12 lg:col-span-8 bg-white border border-slate-100 rounded-xl p-lg shadow-[0_4px_12px_rgba(11,28,48,0.05)]">
+        <div class="flex justify-between items-center mb-xl">
+          <h3 class="font-h3 text-h3 text-on-surface" id="benchmarks-chart-title">Regional Healthcare Performance Comparison (monthly)</h3>
+          <div class="flex items-center gap-xs"><span class="text-xs font-semibold text-slate-400 uppercase tracking-widest" id="benchmarks-year-label">Filter: monthly 2025</span></div>
+        </div>
+        <!-- Monthly Bars -->
+        <div id="benchmarks-bars-monthly" class="relative h-64 flex items-end justify-between gap-8 pt-8">
+          <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-10"><div class="border-t border-on-surface w-full"></div><div class="border-t border-on-surface w-full"></div><div class="border-t border-on-surface w-full"></div><div class="border-t border-on-surface w-full"></div></div>
+          <div class="flex flex-col items-center flex-1 group"><div class="w-full bg-primary rounded-t-lg relative transition-all duration-300 hover:brightness-110" style="height: 88%;"><div class="absolute -top-8 left-1/2 -translate-x-1/2 font-bold text-primary">88%</div></div><span class="mt-xs font-label-caps text-label-caps text-on-surface">Home Country</span></div>
+          <div class="flex flex-col items-center flex-1 group"><div class="w-full bg-surface-variant rounded-t-lg relative transition-all duration-300 hover:bg-slate-300" style="height: 80%;"><div class="absolute -top-8 left-1/2 -translate-x-1/2 font-medium text-slate-500">80%</div></div><span class="mt-xs font-label-caps text-label-caps text-secondary">India</span></div>
+          <div class="flex flex-col items-center flex-1 group"><div class="w-full bg-surface-variant rounded-t-lg relative transition-all duration-300 hover:bg-slate-300" style="height: 62%;"><div class="absolute -top-8 left-1/2 -translate-x-1/2 font-medium text-slate-500">62%</div></div><span class="mt-xs font-label-caps text-label-caps text-secondary">Nepal</span></div>
+          <div class="flex flex-col items-center flex-1 group"><div class="w-full bg-surface-variant rounded-t-lg relative transition-all duration-300 hover:bg-slate-300" style="height: 74%;"><div class="absolute -top-8 left-1/2 -translate-x-1/2 font-medium text-slate-500">74%</div></div><span class="mt-xs font-label-caps text-label-caps text-secondary">Sri Lanka</span></div>
+          <div class="flex flex-col items-center flex-1 group"><div class="w-full bg-surface-variant rounded-t-lg relative transition-all duration-300 hover:bg-slate-300" style="height: 68%;"><div class="absolute -top-8 left-1/2 -translate-x-1/2 font-medium text-slate-500">68%</div></div><span class="mt-xs font-label-caps text-label-caps text-secondary">Bhutan</span></div>
+        </div>
+        <!-- Annual Bars -->
+        <div id="benchmarks-bars-annual" class="relative h-64 flex items-end justify-between gap-8 pt-8" style="display:none">
+          <div class="absolute inset-0 flex flex-col justify-between pointer-events-none opacity-10"><div class="border-t border-on-surface w-full"></div><div class="border-t border-on-surface w-full"></div><div class="border-t border-on-surface w-full"></div><div class="border-t border-on-surface w-full"></div></div>
+          <div class="flex flex-col items-center flex-1 group"><div class="w-full bg-primary rounded-t-lg relative transition-all duration-300 hover:brightness-110" style="height: 92%;"><div class="absolute -top-8 left-1/2 -translate-x-1/2 font-bold text-primary">92%</div></div><span class="mt-xs font-label-caps text-label-caps text-on-surface">Home Country</span></div>
+          <div class="flex flex-col items-center flex-1 group"><div class="w-full bg-surface-variant rounded-t-lg relative transition-all duration-300 hover:bg-slate-300" style="height: 84%;"><div class="absolute -top-8 left-1/2 -translate-x-1/2 font-medium text-slate-500">84%</div></div><span class="mt-xs font-label-caps text-label-caps text-secondary">India</span></div>
+          <div class="flex flex-col items-center flex-1 group"><div class="w-full bg-surface-variant rounded-t-lg relative transition-all duration-300 hover:bg-slate-300" style="height: 68%;"><div class="absolute -top-8 left-1/2 -translate-x-1/2 font-medium text-slate-500">68%</div></div><span class="mt-xs font-label-caps text-label-caps text-secondary">Nepal</span></div>
+          <div class="flex flex-col items-center flex-1 group"><div class="w-full bg-surface-variant rounded-t-lg relative transition-all duration-300 hover:bg-slate-300" style="height: 78%;"><div class="absolute -top-8 left-1/2 -translate-x-1/2 font-medium text-slate-500">78%</div></div><span class="mt-xs font-label-caps text-label-caps text-secondary">Sri Lanka</span></div>
+          <div class="flex flex-col items-center flex-1 group"><div class="w-full bg-surface-variant rounded-t-lg relative transition-all duration-300 hover:bg-slate-300" style="height: 72%;"><div class="absolute -top-8 left-1/2 -translate-x-1/2 font-medium text-slate-500">72%</div></div><span class="mt-xs font-label-caps text-label-caps text-secondary">Bhutan</span></div>
+        </div>
+      </div>
+      <!-- Rankings Summary -->
+      <div class="col-span-12 lg:col-span-4 bg-primary text-white rounded-xl p-lg flex flex-col justify-between shadow-[0_4px_12px_rgba(11,28,48,0.05)]">
+        <div>
+          <span class="material-symbols-outlined text-4xl mb-md" style="font-variation-settings: 'FILL' 1;">military_tech</span>
+          <h3 class="font-h2 text-h2 mb-xs">Regional Leader</h3>
+          <p class="font-body-sm text-body-sm opacity-90">Currently leading the South Asian region in Public Health Infrastructure and Satisfaction metrics.</p>
+        </div>
+        <div class="mt-xl space-y-md">
+          <div class="bg-white/10 rounded-lg p-md flex justify-between items-center"><span class="font-label-caps text-label-caps">Avg. Satisfaction</span><span class="text-h3 font-bold">4.8/5</span></div>
+          <div class="bg-white/10 rounded-lg p-md flex justify-between items-center"><span class="font-label-caps text-label-caps">Coverage Rate</span><span class="text-h3 font-bold">92.4%</span></div>
+        </div>
+      </div>
+      <!-- Rankings Table -->
+      <div class="col-span-12 bg-white border border-slate-100 rounded-xl shadow-[0_4px_12px_rgba(11,28,48,0.05)] overflow-hidden">
+        <div class="px-lg py-md bg-slate-50 border-b border-slate-100 flex justify-between items-center">
+          <h3 class="font-h3 text-h3 text-on-surface">Regional Rankings Detail</h3>
+          <button class="text-primary font-semibold flex items-center gap-2 text-sm">View Full Report <span class="material-symbols-outlined text-sm">arrow_forward</span></button>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-left">
+            <thead class="bg-slate-50/50">
+              <tr>
+                <th class="px-lg py-md font-label-caps text-label-caps text-secondary">Neighboring Country</th>
+                <th class="px-lg py-md font-label-caps text-label-caps text-secondary">Health Coverage (%)</th>
+                <th class="px-lg py-md font-label-caps text-label-caps text-secondary">User Satisfaction</th>
+                <th class="px-lg py-md font-label-caps text-label-caps text-secondary">MMR (per 100k)</th>
+                <th class="px-lg py-md font-label-caps text-label-caps text-secondary text-right">Trend</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-50">
+              <tr class="bg-emerald-50/30"><td class="px-lg py-md font-bold text-on-surface flex items-center gap-2">Our Country<span class="bg-primary-container text-on-primary-container text-[10px] px-2 py-0.5 rounded-full uppercase tracking-tighter">Emerald Badge</span></td><td class="px-lg py-md">92.4%</td><td class="px-lg py-md"><div class="flex gap-0.5 text-tertiary-container"><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star_half</span></div></td><td class="px-lg py-md">115</td><td class="px-lg py-md text-right text-primary"><span class="material-symbols-outlined">trending_up</span></td></tr>
+              <tr><td class="px-lg py-md text-secondary">India</td><td class="px-lg py-md">84.1%</td><td class="px-lg py-md"><div class="flex gap-0.5 text-tertiary-container"><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm">star_outline</span></div></td><td class="px-lg py-md">103</td><td class="px-lg py-md text-right text-secondary"><span class="material-symbols-outlined">trending_flat</span></td></tr>
+              <tr class="bg-slate-50/30"><td class="px-lg py-md text-secondary">Sri Lanka</td><td class="px-lg py-md">78.5%</td><td class="px-lg py-md"><div class="flex gap-0.5 text-tertiary-container"><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star_half</span><span class="material-symbols-outlined text-sm">star_outline</span></div></td><td class="px-lg py-md">36</td><td class="px-lg py-md text-right text-primary"><span class="material-symbols-outlined">trending_up</span></td></tr>
+              <tr><td class="px-lg py-md text-secondary">Bhutan</td><td class="px-lg py-md">72.0%</td><td class="px-lg py-md"><div class="flex gap-0.5 text-tertiary-container"><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm">star_outline</span><span class="material-symbols-outlined text-sm">star_outline</span></div></td><td class="px-lg py-md">183</td><td class="px-lg py-md text-right text-tertiary"><span class="material-symbols-outlined">trending_down</span></td></tr>
+              <tr class="bg-slate-50/30"><td class="px-lg py-md text-secondary">Nepal</td><td class="px-lg py-md">68.2%</td><td class="px-lg py-md"><div class="flex gap-0.5 text-tertiary-container"><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star</span><span class="material-symbols-outlined text-sm" style="font-variation-settings: 'FILL' 1;">star_half</span><span class="material-symbols-outlined text-sm">star_outline</span><span class="material-symbols-outlined text-sm">star_outline</span></div></td><td class="px-lg py-md">186</td><td class="px-lg py-md text-right text-primary"><span class="material-symbols-outlined">trending_up</span></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <!-- Partnerships -->
+      <div class="col-span-12">
+        <h3 class="font-h3 text-h3 text-on-surface mb-lg">Active Partnerships &amp; Compliance</h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-gutter">
+          <div class="bg-white p-lg rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(11,28,48,0.05)] flex flex-col justify-between"><div><div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center mb-md"><span class="material-symbols-outlined text-primary">health_and_safety</span></div><h4 class="font-bold text-lg mb-xs">WHO</h4><p class="text-body-sm text-secondary mb-lg">Global standard alignment for infectious disease tracking and maternal health protocols.</p></div><div class="flex justify-between items-center border-t pt-md"><span class="font-label-caps text-label-caps text-primary">Active</span><div class="w-10 h-5 bg-primary rounded-full relative cursor-pointer shadow-inner"><div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full"></div></div></div></div>
+          <div class="bg-white p-lg rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(11,28,48,0.05)] flex flex-col justify-between"><div><div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center mb-md"><span class="material-symbols-outlined text-primary">child_care</span></div><h4 class="font-bold text-lg mb-xs">UNICEF</h4><p class="text-body-sm text-secondary mb-lg">National vaccination drives and pediatric nutrition monitoring systems integration.</p></div><div class="flex justify-between items-center border-t pt-md"><span class="font-label-caps text-label-caps text-primary">Active</span><div class="w-10 h-5 bg-primary rounded-full relative cursor-pointer shadow-inner"><div class="absolute right-0.5 top-0.5 w-4 h-4 bg-white rounded-full"></div></div></div></div>
+          <div class="bg-white p-lg rounded-xl border border-slate-100 shadow-[0_4px_12px_rgba(11,28,48,0.05)] flex flex-col justify-between"><div><div class="w-12 h-12 bg-surface-container rounded-lg flex items-center justify-center mb-md"><span class="material-symbols-outlined text-primary">account_balance</span></div><h4 class="font-bold text-lg mb-xs">World Bank</h4><p class="text-body-sm text-secondary mb-lg">Funding and monitoring for the Rural Healthcare Accessibility Initiative (RHAI) project.</p></div><div class="flex justify-between items-center border-t pt-md"><span class="font-label-caps text-label-caps text-secondary">Inactive</span><div class="w-10 h-5 bg-slate-200 rounded-full relative cursor-pointer"><div class="absolute left-0.5 top-0.5 w-4 h-4 bg-white rounded-full"></div></div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- FAB: Download Audit PDF (shown on SDG page) -->
+<button id="fab-audit" onclick="downloadAuditPDF()" class="fixed bottom-10 right-10 bg-on-surface text-white p-4 rounded-full shadow-xl hover:scale-105 active:scale-95 transition-all flex items-center gap-2 z-50 hidden no-print">
+  <span class="material-symbols-outlined">picture_as_pdf</span>
+  <span class="font-bold text-sm">Download Audit PDF</span>
+</button>
+
+<script>
+  // ============ PAGE NAVIGATION ============
+  function showPage(page) {
+    document.querySelectorAll('.page-section').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active', 'text-emerald-700', 'font-semibold', 'bg-emerald-50'));
+    
+    const pageEl = document.getElementById('page-' + page);
+    if (pageEl) pageEl.classList.add('active');
+    
+    // Update nav
+    const navLinks = document.querySelectorAll('.nav-link');
+    const pageMap = { national: 0, divisional: 1, sdg: 2, policy: 3, benchmarks: 4 };
+    const idx = pageMap[page];
+    if (idx !== undefined) navLinks[idx].classList.add('active');
+
+    // Show/hide audit button
+    const auditBtn = document.getElementById('audit-btn');
+    const fabAudit = document.getElementById('fab-audit');
+    if (page === 'sdg') {
+      auditBtn.classList.remove('hidden');
+      auditBtn.classList.add('flex');
+      fabAudit.classList.remove('hidden');
+    } else {
+      auditBtn.classList.add('hidden');
+      auditBtn.classList.remove('flex');
+      fabAudit.classList.add('hidden');
+    }
+  }
+
+  // ============ CHART MODE TOGGLE ============
+  const chartModes = { national: 'monthly', divisional: 'monthly', sdg: 'monthly', policy: 'monthly', benchmarks: 'monthly' };
+
+  function setChartMode(mode, page) {
+    chartModes[page] = mode;
+
+    const monthlyBtn = document.getElementById(page + '-monthly-btn');
+    const annualBtn = document.getElementById(page + '-annual-btn');
+
+    if (mode === 'monthly') {
+      monthlyBtn.classList.add('bg-white', 'text-emerald-700', 'shadow-sm');
+      monthlyBtn.classList.remove('text-slate-500');
+      annualBtn.classList.remove('bg-white', 'text-emerald-700', 'shadow-sm');
+      annualBtn.classList.add('text-slate-500');
+    } else {
+      annualBtn.classList.add('bg-white', 'text-emerald-700', 'shadow-sm');
+      annualBtn.classList.remove('text-slate-500');
+      monthlyBtn.classList.remove('bg-white', 'text-emerald-700', 'shadow-sm');
+      monthlyBtn.classList.add('text-slate-500');
+    }
+
+    // National page
+    if (page === 'national') {
+      const mChart = document.getElementById('national-chart-monthly');
+      const aChart = document.getElementById('national-chart-annual');
+      const mLabels = document.getElementById('national-labels-monthly');
+      const aLabels = document.getElementById('national-labels-annual');
+      const title = document.getElementById('national-chart-title');
+      if (mode === 'monthly') {
+        mChart.style.display = ''; aChart.style.display = 'none';
+        mLabels.style.display = ''; aLabels.style.display = 'none';
+        title.textContent = 'National Healthcare Growth Trends (monthly - 2025)';
+      } else {
+        mChart.style.display = 'none'; aChart.style.display = '';
+        mLabels.style.display = 'none'; aLabels.style.display = '';
+        title.textContent = 'National Healthcare Growth Trends (annual - 2020-2025)';
+      }
+    }
+
+    // Divisional page
+    if (page === 'divisional') {
+      const mBars = document.getElementById('divisional-bars-monthly');
+      const aBars = document.getElementById('divisional-bars-annual');
+      const title = document.getElementById('divisional-chart-title');
+      const label = document.getElementById('divisional-period-label');
+      if (mode === 'monthly') {
+        mBars.style.display = ''; aBars.style.display = 'none';
+        title.textContent = 'Divisional Performance Comparison (monthly)';
+        label.textContent = 'monthly - 2025';
+      } else {
+        mBars.style.display = 'none'; aBars.style.display = '';
+        title.textContent = 'Divisional Performance Comparison (annual)';
+        label.textContent = 'annual - FY2024';
+      }
+    }
+
+    // SDG page
+    if (page === 'sdg') {
+      const label = document.getElementById('sdg-period-label');
+      const v1 = document.getElementById('sdg1-current');
+      if (mode === 'monthly') {
+        label.textContent = 'monthly Data - 2025';
+        if (v1) v1.textContent = '74.2%';
+      } else {
+        label.textContent = 'annual Data - 2020-2025';
+        if (v1) v1.textContent = '71.8%';
+      }
+    }
+
+    // Policy page
+    if (page === 'policy') {
+      const label = document.getElementById('policy-period-label');
+      label.textContent = mode === 'monthly' ? 'monthly - 2025' : 'annual - 2026';
+    }
+
+    // Benchmarks page
+    if (page === 'benchmarks') {
+      const mBars = document.getElementById('benchmarks-bars-monthly');
+      const aBars = document.getElementById('benchmarks-bars-annual');
+      const title = document.getElementById('benchmarks-chart-title');
+      const yearLabel = document.getElementById('benchmarks-year-label');
+      if (mode === 'monthly') {
+        mBars.style.display = ''; aBars.style.display = 'none';
+        title.textContent = 'Regional Healthcare Performance Comparison (monthly)';
+        yearLabel.textContent = 'Filter: monthly 2025';
+      } else {
+        mBars.style.display = 'none'; aBars.style.display = '';
+        title.textContent = 'Regional Healthcare Performance Comparison (annual)';
+        yearLabel.textContent = 'Filter Year: 2024';
+      }
+    }
+  }
+
+  // ============ EXPORT PDF ============
+  function exportPDF() {
+    const originalTitle = document.title;
+    document.title = 'HealthMetrics Dashboard Report - ' + new Date().toLocaleDateString('bn-BD');
+    window.print();
+    document.title = originalTitle;
+  }
+
+  // ============ DOWNLOAD AUDIT PDF ============
+  function downloadAuditPDF() {
+    // Create a styled audit report in a new window and print it
+    const auditContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8"/>
+        <title>Health Audit Report 2024</title>
+        <style>
+          body { font-family: Arial, sans-serif; margin: 40px; color: #0b1c30; }
+          h1 { color: #006c49; border-bottom: 3px solid #006c49; padding-bottom: 10px; }
+          h2 { color: #006c49; margin-top: 30px; }
+          table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+          th { background: #006c49; color: white; padding: 10px; text-align: left; }
+          td { padding: 8px 10px; border-bottom: 1px solid #e2e8f0; }
+          tr:nth-child(even) { background: #f8f9ff; }
+          .badge { display: inline-block; padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: bold; }
+          .on-track { background: #d1fae5; color: #065f46; }
+          .needs-accel { background: #fef3c7; color: #92400e; }
+          .header-box { background: #f0fdf4; border: 1px solid #6ee7b7; padding: 15px 20px; border-radius: 8px; margin-bottom: 20px; }
+          .stat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin: 20px 0; }
+          .stat-box { background: #f8f9ff; border: 1px solid #e2e8f0; padding: 15px; border-radius: 8px; }
+          .stat-val { font-size: 28px; font-weight: 700; color: #006c49; }
+          .stat-label { font-size: 11px; text-transform: uppercase; color: #545f73; letter-spacing: 0.05em; }
+          footer { margin-top: 60px; border-top: 1px solid #e2e8f0; padding-top: 15px; font-size: 12px; color: #545f73; }
+          @media print { body { margin: 20px; } }
+        </style>
+      </head>
+      <body>
+        <div class="header-box">
+          <h1 style="margin:0;border:none;padding:0">🏥 National Health Performance Audit Report</h1>
+          <p style="margin:5px 0 0;color:#545f73;">Prepared by: HealthMetrics Global Operations Center &nbsp;|&nbsp; Audit Cycle: 2024 &nbsp;|&nbsp; Date: ${new Date().toLocaleDateString('bn-BD', {year:'numeric',month:'long',day:'numeric'})}</p>
+        </div>
+
+        <h2>Executive Summary</h2>
+        <p>This audit report provides a comprehensive evaluation of the national health system's progress against Sustainable Development Goals (SDGs) and key performance indicators for the 2024 audit cycle.</p>
+
+        <div class="stat-grid">
+          <div class="stat-box"><div class="stat-label">UHC Index</div><div class="stat-val">74.2%</div><div style="font-size:12px;color:#10b981;margin-top:4px;">▲ +2.1% vs last year</div></div>
+          <div class="stat-box"><div class="stat-label">Child Mortality Rate</div><div class="stat-val">24.5</div><div style="font-size:12px;color:#10b981;margin-top:4px;">▼ -3.2 per 1,000</div></div>
+          <div class="stat-box"><div class="stat-label">Diabetes Screening</div><div class="stat-val">68%</div><div style="font-size:12px;color:#10b981;margin-top:4px;">▲ +5% vs last year</div></div>
+        </div>
+
+        <h2>SDG Progress Summary</h2>
+        <table>
+          <thead>
+            <tr><th>Goal</th><th>Indicator</th><th>Current</th><th>Target 2030</th><th>Status</th><th>Progress</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>SDG 3.8.1</td><td>Universal Health Coverage</td><td>74.2%</td><td>80.0%</td><td><span class="badge on-track">ON TRACK</span></td><td>92% of interim target</td></tr>
+            <tr><td>SDG 3.1.1</td><td>Maternal Mortality Ratio</td><td>112 per 100k</td><td>&lt; 70 per 100k</td><td><span class="badge needs-accel">NEEDS ACCELERATION</span></td><td>45% reduction achieved</td></tr>
+            <tr><td>SDG 3.2.1</td><td>Child (Under-5) Mortality</td><td>24.5 per 1,000</td><td>25.0 per 1,000</td><td><span class="badge on-track">ON TRACK</span></td><td>Goal achieved</td></tr>
+            <tr><td>SDG 3.3.2</td><td>TB Incidence Rate</td><td>142 per 100k</td><td>20 per 100k</td><td><span class="badge needs-accel">NEEDS ACCELERATION</span></td><td>18% progress vs baseline</td></tr>
+            <tr><td>Nat. Goal 4.2</td><td>Diabetes Screening</td><td>68%</td><td>75%</td><td><span class="badge on-track">ON TRACK</span></td><td>78% implementation</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Healthcare Access by Region</h2>
+        <table>
+          <thead><tr><th>Region Type</th><th>Access Rate</th><th>Change YoY</th></tr></thead>
+          <tbody>
+            <tr><td>Urban Areas</td><td>92%</td><td>+1.5%</td></tr>
+            <tr><td>Rural Regions</td><td>73%</td><td>+3.2%</td></tr>
+            <tr><td>Remote Outposts</td><td>58%</td><td>+4.8%</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Key Achievements 2024</h2>
+        <ul>
+          <li>✅ Universal Healthcare — 80% Coverage milestone reached</li>
+          <li>✅ Early TB Detection — National screening meta-target achieved</li>
+          <li>✅ Child Immunization — Peak national coverage recorded</li>
+          <li>✅ Digital Health Records pilot launched in Dhaka &amp; Sylhet</li>
+          <li>✅ 150 community clinics deployment program initiated</li>
+        </ul>
+
+        <h2>International Benchmark Comparison (2024)</h2>
+        <table>
+          <thead><tr><th>Country</th><th>Health Coverage</th><th>MMR (per 100k)</th><th>Satisfaction</th><th>Trend</th></tr></thead>
+          <tbody>
+            <tr style="background:#f0fdf4"><td><strong>Our Country ⭐</strong></td><td><strong>92.4%</strong></td><td>115</td><td>4.8/5</td><td>↑ Improving</td></tr>
+            <tr><td>India</td><td>84.1%</td><td>103</td><td>4.0/5</td><td>→ Stable</td></tr>
+            <tr><td>Sri Lanka</td><td>78.5%</td><td>36</td><td>3.5/5</td><td>↑ Improving</td></tr>
+            <tr><td>Bhutan</td><td>72.0%</td><td>183</td><td>3.0/5</td><td>↓ Declining</td></tr>
+            <tr><td>Nepal</td><td>68.2%</td><td>186</td><td>2.5/5</td><td>↑ Improving</td></tr>
+          </tbody>
+        </table>
+
+        <h2>Recommendations</h2>
+        <ol>
+          <li>Accelerate TB elimination program with increased funding allocation in Sylhet and Rangpur divisions.</li>
+          <li>Enhance maternal healthcare infrastructure in remote outpost areas targeting MMR reduction to &lt;70 by 2030.</li>
+          <li>Expand digital health records system beyond pilot cities to remaining 6 divisions by Q3 2026.</li>
+          <li>Strengthen World Bank partnership (currently inactive) for Rural Healthcare Accessibility Initiative.</li>
+        </ol>
+
+        <footer>
+          <p>© 2024 Global HealthMetrics Operations | Data integrity verified by WHO standards | Audit conducted per SDG 3.8 protocol</p>
+          <p>This document is auto-generated by the HealthMetrics Dashboard. For official use only.</p>
+        </footer>
+      </body>
+      </html>
+    `;
+
+    const auditWindow = window.open('', '_blank', 'width=900,height=700');
+    auditWindow.document.write(auditContent);
+    auditWindow.document.close();
+    auditWindow.onload = function() {
+      auditWindow.focus();
+      auditWindow.print();
+    };
+  }
+
+  // ============ LOGOUT ============
+  function doLogout() {
+    window.location.href = 'index.html';
+  }
+</script>
+</body>
+</html>
